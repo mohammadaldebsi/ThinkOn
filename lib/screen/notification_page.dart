@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:thinkon/screen/posts/postClient_page.dart';
+import 'package:thinkon/screen/posts/postSeller_page.dart';
 import 'package:thinkon/screen/profile_page.dart';
 import 'package:thinkon/screen/profileother.dart';
 import 'package:thinkon/widget/constant.dart';
@@ -16,7 +17,7 @@ class Notification1 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _Notification1();
+    return MaterialApp(debugShowCheckedModeBanner: false,home: _Notification1(),);
   }
 }
 
@@ -58,61 +59,39 @@ class _Notification1State extends State<_Notification1> {
               borderRadius: BorderRadius.only(
                   bottomRight: Radius.circular(50),
                   bottomLeft: Radius.circular(50)))),
-      body: loading
-          ? const Center(child: CircularProgressIndicator())
-          : ListView.separated(
-        separatorBuilder: (context, index) => Divider(
-          color: Colors.black,
-        ),
-              itemCount:3,
-              itemBuilder: (context, index) => Column(
-                children: [
-                    ListTile(
-                        onTap: () {Navigator.push(context, MaterialPageRoute(builder: (context){
-                          return PostClients(client:  clients[index],);
-                        }));},
-                        leading: const Icon(
-                          Icons.notifications,
-                          color: coloruses,
-                          size: 30,
-                        ),
-                        title: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            StreamBuilder<DocumentSnapshot>(
-                              stream: FirebaseFirestore.instance
-                                  .collection('Users')
-                                  .doc(clients[index].uid)
-                                  .snapshots(),
-                              builder: (context, snapshot) {
-                                if (!snapshot.hasData) {
-                                  return Center(
-                                    child: CircularProgressIndicator(
-                                      backgroundColor: Colors.lightBlueAccent,
-                                    ),
-                                  );
-                                }
-                                final messages = snapshot.data!.get("Username");
-
-                                return Text(messages,
-                                    style: TextStyle(
-                                        color: coloruses,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold));
-                              },
-                            ),
-                            Text("client",
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 15,
-                                )),
-                          ],
-                        ),
-                        trailing: Text(clients[index].subCategory)),
-
-                ],
+      body:DefaultTabController(
+        length: 2, // length of tabs
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Container(
+                child: TabBar(
+                  labelColor: Color(0xFF223843),
+                  indicatorColor: Color(0xFF223843),
+                  unselectedLabelColor: Colors.black,
+                  indicatorSize: TabBarIndicatorSize.label,
+                  tabs:const [
+                    Tab(child: Text("Seller ")),
+                    Tab(child: Text("Client "),),
+                  ],
+                ),
               ),
-            ),
+              Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                child: TabBarView(
+                  children: [
+
+                    Seller_Notification(sellers),
+                    Client_Notification(clients),
+                  ],
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
     );
   }
 
@@ -122,7 +101,7 @@ class _Notification1State extends State<_Notification1> {
         .orderBy('timestamp')
         .get()
         .then((querySnapshot) => {
-              querySnapshot.docs.forEach((doc) => {
+              querySnapshot.docs.reversed.forEach((doc) => {
                     clients.add(ClientModel(doc["Category"], doc["SubCategory"],
                         doc["Uuid"], doc["Description"], doc["Budget"]))
                   })
@@ -135,12 +114,11 @@ class _Notification1State extends State<_Notification1> {
         .orderBy('timestamp')
         .get()
         .then((querySnapshot) => {
-              querySnapshot.docs.forEach((doc) => {
+              querySnapshot.docs.reversed.forEach((doc) => {
                     sellers.add(SellerModel(
                       doc["Category"],
                       doc["SubCategory"],
                       doc["Uuid"],
-                      doc["Description"],
                       doc["BasicDescription"],
                       doc["PremiumPrice"],
                       doc["PremiumDescription"],
@@ -148,5 +126,130 @@ class _Notification1State extends State<_Notification1> {
                     ))
                   })
             });
+  }
+}
+class Seller_Notification extends StatefulWidget {
+  List<SellerModel> sellers = [];
+
+  @override
+  State<Seller_Notification> createState() => _Seller_NotificationState();
+
+  Seller_Notification(this.sellers);
+}
+
+class _Seller_NotificationState extends State<Seller_Notification> {
+  @override
+  Widget build(BuildContext context) {
+    return  ListView.separated(
+          separatorBuilder: (context, index) => Divider(
+            color: Colors.black,
+          ),
+                itemCount:widget.sellers.length,
+                itemBuilder: (context, index) => Column(
+                  children: [
+                      ListTile(
+                          onTap: () {Navigator.push(context, MaterialPageRoute(builder: (context){
+                            return PostSellers(seller:  widget.sellers[index],);
+                          }));},
+                          leading: const Icon(
+                            Icons.notifications,
+                            color: coloruses,
+                            size: 30,
+                          ),
+                          title: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              StreamBuilder<DocumentSnapshot>(
+                                stream: FirebaseFirestore.instance
+                                    .collection('Users')
+                                    .doc(widget.sellers[index].uid)
+                                    .snapshots(),
+                                builder: (context, snapshot) {
+                                  if (!snapshot.hasData) {
+                                    return Center(
+                                      child: CircularProgressIndicator(
+                                        backgroundColor: Colors.lightBlueAccent,
+                                      ),
+                                    );
+                                  }
+                                  final messages = snapshot.data!.get("Username");
+
+                                  return Text(messages,
+                                      style: TextStyle(
+                                          color: coloruses,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold));
+                                },
+                              ),
+                            ],
+                          ),
+                          trailing: Text(widget.sellers[index].subCategory)),
+
+                  ],
+                ),
+              );
+  }
+}
+class Client_Notification extends StatefulWidget {
+
+  List<ClientModel> clients = [];
+  @override
+  State<Client_Notification> createState() => _Client_NotificationState();
+
+  Client_Notification(this.clients);
+}
+
+class _Client_NotificationState extends State<Client_Notification> {
+  @override
+  Widget build(BuildContext context) {
+    return  ListView.separated(
+          separatorBuilder: (context, index) => Divider(
+            color: Colors.black,
+          ),
+                itemCount:widget.clients.length,
+                itemBuilder: (context, index) => Column(
+                  children: [
+                      ListTile(
+                          onTap: () {Navigator.push(context, MaterialPageRoute(builder: (context){
+                            return PostClients(client:  widget.clients[index],);
+                          }));},
+                          leading: const Icon(
+                            Icons.notifications,
+                            color: coloruses,
+                            size: 30,
+                          ),
+                          title: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              StreamBuilder<DocumentSnapshot>(
+                                stream: FirebaseFirestore.instance
+                                    .collection('Users')
+                                    .doc(widget.clients[index].uid)
+                                    .snapshots(),
+                                builder: (context, snapshot) {
+                                  if (!snapshot.hasData) {
+                                    return Center(
+                                      child: CircularProgressIndicator(
+                                        backgroundColor: Colors.lightBlueAccent,
+                                      ),
+                                    );
+                                  }
+                                  final messages = snapshot.data!.get("Username");
+
+                                  return Text(messages,
+                                      style: TextStyle(
+                                          color: coloruses,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold));
+                                },
+                              ),
+
+                            ],
+                          ),
+                          trailing: Text(widget.clients[index].subCategory)),
+
+                  ],
+                ),
+              );
   }
 }

@@ -5,7 +5,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:thinkon/screen/Category.dart';
 import 'package:thinkon/screen/search_page.dart';
-import 'package:thinkon/screen/subcategory_page.dart';
 import 'package:thinkon/widget/constant.dart';
 
 import '../home_page.dart';
@@ -14,7 +13,6 @@ TextEditingController premiumDescription = TextEditingController();
 TextEditingController premiumPrice = TextEditingController();
 TextEditingController basicDescription = TextEditingController();
 TextEditingController basicPrice = TextEditingController();
-
 class NewPost extends StatelessWidget {
   const NewPost({Key? key}) : super(key: key);
 
@@ -33,6 +31,7 @@ class NewPostOption extends StatefulWidget {
 }
 
 class _NewPostOptionState extends State<NewPostOption> {
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -92,10 +91,145 @@ class _PostSellerState extends State<PostSeller> {
   List<String> categoryList = addList();
   late String valueCategoryList = categoryList[0];
   late String newValue = valueCategoryList;
-  late List<String> subCategoryList = listfill(newValue);
+  late List<String> subCategoryList = _listfill(newValue);
   late String valueSubCategoryList = subCategoryList[0];
-  TextEditingController discseller = TextEditingController();
+
   final _formK = GlobalKey<FormState>();
+
+  List<String> _listfill(String name) {
+
+    List<String> Programming = [
+      "WordPress",
+      "Website Builders",
+      "Game Development",
+      "Mobile Apps",
+      "Web Programming",
+      "Desktop Applications",
+      "Chatbots",
+      "Cyber security",
+      "User Testing",
+      "QA & Review",
+      "E-Commerce Development",
+      "Other",
+    ];
+
+    List<String> Data = [
+      "	Data Entry",
+      "	Data Processing",
+      "	Data Analytics",
+      "	Data Visualization",
+      "	Data Science",
+      "	Databases",
+      "	Data Engineering",
+      "	Other",
+    ];
+    List<String> DigitalMarketing = [
+      "Marketing Strategy",
+      "Social Media Marketing",
+      "Social Media Advertising",
+      "Search Engine Optimization (SEO)",
+      "Search Engine Marketing (SEM)",
+      "Local SEO",
+      "Public Relations",
+      "Marketing Advice",
+      "Video Marketing",
+      "Email Marketing",
+      "Influencer Marketing",
+      "Web Analytics",
+      "Mobile App Marketing",
+      "Other",
+    ];
+    List<String> GraphicsDesign = [
+      "Website Design",
+      "App Design",
+      "UX Design",
+      "Landing Page Design",
+      "Icon Design",
+      "Logo Design",
+      "Fashion Design",
+      "Image Editing",
+      "Social Media Design",
+      "AR Filters & Lenses",
+      "Email Design",
+      "Other",
+    ];
+    List<String> WritingTranslation = [
+      "	Articles & Blog Posts",
+      "	Translation",
+      "	Website Content",
+      "	Brand Voice & Tone",
+      "	Product Descriptions",
+      "	Social Media Copy",
+      "	Sales Copy",
+      "	Book & eBook Writing",
+      "	Email Copy",
+      "	Ad Copy",
+      "	Case Studies",
+      "	Technical Writing",
+      "	Scriptwriting",
+      "	Other",
+    ];
+    List<String> VideoAnimation = [
+      "Video Editing",
+      "Short Video Ads",
+      "Animated GIFs",
+      "Logo Animation",
+      "Spokesperson Videos",
+      "Lyric & Music Videos",
+      "Character Animation",
+      "Lottie & Website Animation",
+      "3D Product Animation",
+      "E-Commerce Product Videos",
+      "Social Media Videos",
+      "Subtitles & Captions",
+      "App & Website Previews",
+      "Other",
+    ];
+    List<String> MusicAudio = [
+      "Voice Over",
+      "Mixing & Mastering",
+      "Producers & Composers",
+      "Podcast Editing",
+      "Audiobook Production",
+      "Sound Design",
+      "Audio Logo & Sonic Branding",
+      "Singers & Vocalists",
+      "Songwriters",
+      "Other",
+    ];
+    List<String> Business = [
+      "E-Commerce Management",
+      "Market Research",
+      "Business Plans",
+      "Presentations",
+      "Sales",
+      "Other",
+    ];
+
+    switch (name) {
+      case "Data":
+        return Data;
+
+      case "Programming":
+        return Programming;
+      case "Digital Marketing":
+        return DigitalMarketing;
+
+      case "Graphics & Design":
+        return GraphicsDesign;
+      case "Writing & Translation":
+        return WritingTranslation;
+      case "Video & Animation":
+        return VideoAnimation;
+      case "Music & Audio":
+        return MusicAudio;
+      case "Business":
+        return Business;
+      case "Other":
+        return ["Other"];
+    }
+    return [];
+  }
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -103,34 +237,36 @@ class _PostSellerState extends State<PostSeller> {
       child: SingleChildScrollView(
         child: Column(
           children: [
+
             Padding(
               padding: const EdgeInsets.fromLTRB(8, 20, 8, 0),
               child: Container(
-                height: 100,
                 width: 500,
-                child: TextFormField(
-                  controller: discseller,
-                  keyboardType: TextInputType.multiline,
-                  maxLines: null,
-                  expands: true,
-                  decoration: InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                      borderSide:
-                          const BorderSide(color: Colors.blueGrey, width: 1.5),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    label: const Text(
-                      "About you",
-                      style: TextStyle(color: coloruses),
-                    ),
+                height: 50,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    border: Border.all(width: 1.5, color: coloruses)),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: DropdownButton(
+                    value: valueCategoryList,
+                    isExpanded: true,
+                    onChanged: (String? value) {
+                      setState(() {
+                        valueCategoryList = value!;
+                        subCategoryList = _listfill(valueCategoryList);
+                        valueSubCategoryList = subCategoryList[0];
+                      });
+                    },
+                    items: categoryList
+                        .map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                    borderRadius: BorderRadius.circular(15),
                   ),
-                  validator: (String? value) {
-                    if (value!.isNotEmpty) {
-                      return null;
-                    } else {
-                      return "Enter some info about you";
-                    }
-                  },
                 ),
               ),
             ),
@@ -141,62 +277,41 @@ class _PostSellerState extends State<PostSeller> {
                 height: 50,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15),
-                    border: Border.all(width: 1.5, color: Colors.blue)),
-                child: DropdownButton(
-                  value: valueCategoryList,
-                  onChanged: (String? value) {
-                    setState(() {
-                      valueCategoryList = value!;
-                      subCategoryList = listfill(valueCategoryList);
-                      valueSubCategoryList = subCategoryList[0];
-                    });
-                  },
-                  items: categoryList
-                      .map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                  borderRadius: BorderRadius.circular(15),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(8, 20, 8, 0),
-              child: Container(
-                width: 500,
-                height: 50,
-                decoration: BoxDecoration(
+                    border: Border.all(width: 1.5, color: coloruses)),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: DropdownButton(
+                    isExpanded: true,
+                    value: valueSubCategoryList,
+                    onChanged: (String? value) {
+                      setState(() {
+                        valueSubCategoryList = value!;
+                      });
+                    },
+                    items: subCategoryList
+                        .map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
                     borderRadius: BorderRadius.circular(15),
-                    border: Border.all(width: 1.5, color: Colors.blue)),
-                child: DropdownButton(
-                  value: valueSubCategoryList,
-                  onChanged: (String? value) {
-                    setState(() {
-                      valueSubCategoryList = value!;
-                    });
-                  },
-                  items: subCategoryList
-                      .map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                  borderRadius: BorderRadius.circular(15),
+                  ),
                 ),
               ),
             ),
             DefaultTabController(
               length: 2, // length of tabs
+
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
                   Container(
                     child: TabBar(
-                      labelColor: Colors.blue,
-                      unselectedLabelColor: Colors.black,
+                      labelColor: coloruses,
+                      unselectedLabelColor: Colors.grey,
+                      indicatorColor: coloruses,
+                      indicatorSize: TabBarIndicatorSize.label,
                       tabs: [
                         Tab(child: Text("Basic")),
                         Tab(child: Text("Premium")),
@@ -223,22 +338,17 @@ class _PostSellerState extends State<PostSeller> {
                                     decoration: InputDecoration(
                                       enabledBorder: OutlineInputBorder(
                                         borderSide: const BorderSide(
-                                            color: Colors.blueGrey, width: 1.5),
+                                            color: coloruses, width: 1.5),
                                         borderRadius: BorderRadius.circular(15),
                                       ),
-                                      label: const Text(
-                                        "Basic Price",
-                                        style: TextStyle(color: coloruses),
-                                      ),
+                                      hintText: "Basic Price" ,hintStyle:  TextStyle(color: coloruses)
                                     ),
                                     validator: (value) {
+                                      if (value!.isEmpty) {
+                                        return "enter your Price";
+                                      }
                                       if (int.parse(value!) <= 0) {
                                         return "Enter true price";
-                                      }
-                                      if (value.isNotEmpty) {
-                                        return null;
-                                      }  else {
-                                        return "enter your Price";
                                       }
                                     },
                                   ),
@@ -248,22 +358,19 @@ class _PostSellerState extends State<PostSeller> {
                                 padding: const EdgeInsets.fromLTRB(8, 20, 8, 0),
                                 child: Container(
                                   height: 100,
-                                  width: 500,
+                                  width: MediaQuery.of(context).size.width,
                                   child: TextFormField(
                                     controller: basicDescription,
                                     maxLines: null,
                                     expands: true,
                                     decoration: InputDecoration(
-                                      enabledBorder: OutlineInputBorder(
-                                        borderSide: const BorderSide(
-                                            color: Colors.blueGrey, width: 1.5),
-                                        borderRadius: BorderRadius.circular(15),
-                                      ),
-                                      label: const Text(
-                                        "Basic Description",
-                                        style: TextStyle(color: coloruses),
-                                      ),
-                                    ),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderSide: const BorderSide(
+                                              color: coloruses, width: 1.5),
+                                          borderRadius:
+                                              BorderRadius.circular(15),
+                                        ),
+                                        hintText: "Basic Description" ,hintStyle:  TextStyle(color: coloruses)),
                                     validator: (String? value) {
                                       if (value!.isNotEmpty) {
                                         return null;
@@ -283,27 +390,24 @@ class _PostSellerState extends State<PostSeller> {
                               Padding(
                                 padding: const EdgeInsets.fromLTRB(8, 10, 8, 0),
                                 child: Container(
-                                  height: 100,
-                                  width: 500,
+                                  height: 50,
+                                  width: MediaQuery.of(context).size.width,
                                   child: TextFormField(
                                     keyboardType: TextInputType.number,
                                     controller: premiumPrice,
                                     decoration: InputDecoration(
                                       enabledBorder: OutlineInputBorder(
                                         borderSide: const BorderSide(
-                                            color: Colors.blueGrey, width: 1.5),
+                                            color: coloruses, width: 1.5),
                                         borderRadius: BorderRadius.circular(15),
                                       ),
                                       label: const Text(
                                         "Premium Price",
-                                        style: TextStyle(color: Colors.blue),
+                                        style: TextStyle(color: coloruses),
                                       ),
                                     ),
                                     validator: (String? value) {
-                                      if (int.parse(value!) <= 0) {
-                                        return "Enter true price";
-                                      }
-                                      if (value.isNotEmpty) {
+                                      if (value!.isNotEmpty) {
                                         return null;
                                       } else {
                                         return "enter your price";
@@ -313,7 +417,7 @@ class _PostSellerState extends State<PostSeller> {
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+                                padding: const EdgeInsets.fromLTRB(8, 20, 8, 0),
                                 child: Container(
                                   height: 100,
                                   width: 500,
@@ -324,18 +428,16 @@ class _PostSellerState extends State<PostSeller> {
                                     decoration: InputDecoration(
                                       enabledBorder: OutlineInputBorder(
                                         borderSide: const BorderSide(
-                                            color: Colors.blueGrey, width: 1.5),
+                                            color: coloruses, width: 1.5),
                                         borderRadius: BorderRadius.circular(15),
                                       ),
                                       label: const Text(
                                         "Premium Description",
-                                        style: TextStyle(color: Colors.blue),
+                                        style: TextStyle(color: coloruses),
                                       ),
                                     ),
                                     validator: (String? value) {
-                                      if (value!.isNotEmpty) {
-                                        return null;
-                                      } else {
+                                      if (value!.isEmpty) {
                                         return "enter your Description";
                                       }
                                     },
@@ -370,7 +472,6 @@ class _PostSellerState extends State<PostSeller> {
                                   .collection('SellerPosts')
                                   .doc()
                                   .set({
-                                "Description": discseller.text,
                                 "Category": valueCategoryList,
                                 "SubCategory": valueSubCategoryList,
                                 "Uuid": FirebaseAuth.instance.currentUser!.uid,
@@ -387,7 +488,6 @@ class _PostSellerState extends State<PostSeller> {
                                   .collection('SellerPosts')
                                   .doc()
                                   .set({
-                                "Description": discseller.text,
                                 "Category": valueCategoryList,
                                 "SubCategory": valueSubCategoryList,
                                 "BasicPrice": basicPrice.text,
@@ -396,6 +496,10 @@ class _PostSellerState extends State<PostSeller> {
                                 "PremiumDescription": premiumDescription.text,
                                 'timestamp': Timestamp.now(),
                               });
+                              basicDescription.clear();
+                              basicPrice.clear();
+                              premiumPrice.clear();
+                              premiumDescription.clear();
                               Navigator.push(context,
                                   MaterialPageRoute(builder: (context) {
                                 return Homepage();
@@ -425,11 +529,147 @@ class _PostClientState extends State<PostClient> {
   List<String> categoryList = addList();
   late String valueCategoryList = categoryList[0];
   String newValue = "Programming";
-  List<String> subCategoryList = listfill("Programming");
+  late List<String> subCategoryList = _listfill("Programming");
   late String valueSubCategoryList = subCategoryList[0];
   TextEditingController _disc = TextEditingController();
   TextEditingController _budget = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+
+
+  List<String> _listfill(String name) {
+
+    List<String> Programming = [
+      "WordPress",
+      "Website Builders",
+      "Game Development",
+      "Mobile Apps",
+      "Web Programming",
+      "Desktop Applications",
+      "Chatbots",
+      "Cyber security",
+      "User Testing",
+      "QA & Review",
+      "E-Commerce Development",
+      "Other",
+    ];
+
+    List<String> Data = [
+      "	Data Entry",
+      "	Data Processing",
+      "	Data Analytics",
+      "	Data Visualization",
+      "	Data Science",
+      "	Databases",
+      "	Data Engineering",
+      "	Other",
+    ];
+    List<String> DigitalMarketing = [
+      "Marketing Strategy",
+      "Social Media Marketing",
+      "Social Media Advertising",
+      "Search Engine Optimization (SEO)",
+      "Search Engine Marketing (SEM)",
+      "Local SEO",
+      "Public Relations",
+      "Marketing Advice",
+      "Video Marketing",
+      "Email Marketing",
+      "Influencer Marketing",
+      "Web Analytics",
+      "Mobile App Marketing",
+      "Other",
+    ];
+    List<String> GraphicsDesign = [
+      "Website Design",
+      "App Design",
+      "UX Design",
+      "Landing Page Design",
+      "Icon Design",
+      "Logo Design",
+      "Fashion Design",
+      "Image Editing",
+      "Social Media Design",
+      "AR Filters & Lenses",
+      "Email Design",
+      "Other",
+    ];
+    List<String> WritingTranslation = [
+      "	Articles & Blog Posts",
+      "	Translation",
+      "	Website Content",
+      "	Brand Voice & Tone",
+      "	Product Descriptions",
+      "	Social Media Copy",
+      "	Sales Copy",
+      "	Book & eBook Writing",
+      "	Email Copy",
+      "	Ad Copy",
+      "	Case Studies",
+      "	Technical Writing",
+      "	Scriptwriting",
+      "	Other",
+    ];
+    List<String> VideoAnimation = [
+      "Video Editing",
+      "Short Video Ads",
+      "Animated GIFs",
+      "Logo Animation",
+      "Spokesperson Videos",
+      "Lyric & Music Videos",
+      "Character Animation",
+      "Lottie & Website Animation",
+      "3D Product Animation",
+      "E-Commerce Product Videos",
+      "Social Media Videos",
+      "Subtitles & Captions",
+      "App & Website Previews",
+      "Other",
+    ];
+    List<String> MusicAudio = [
+      "Voice Over",
+      "Mixing & Mastering",
+      "Producers & Composers",
+      "Podcast Editing",
+      "Audiobook Production",
+      "Sound Design",
+      "Audio Logo & Sonic Branding",
+      "Singers & Vocalists",
+      "Songwriters",
+      "Other",
+    ];
+    List<String> Business = [
+      "E-Commerce Management",
+      "Market Research",
+      "Business Plans",
+      "Presentations",
+      "Sales",
+      "Other",
+    ];
+
+    switch (name) {
+      case "Data":
+        return Data;
+
+      case "Programming":
+        return Programming;
+      case "Digital Marketing":
+        return DigitalMarketing;
+
+      case "Graphics & Design":
+        return GraphicsDesign;
+      case "Writing & Translation":
+        return WritingTranslation;
+      case "Video & Animation":
+        return VideoAnimation;
+      case "Music & Audio":
+        return MusicAudio;
+      case "Business":
+        return Business;
+      case "Other":
+        return ["Other"];
+    }
+    return [];
+  }
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -450,12 +690,12 @@ class _PostClientState extends State<PostClient> {
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
                       borderSide:
-                          const BorderSide(color: Colors.blueGrey, width: 1.5),
+                          const BorderSide(color: coloruses, width: 1.5),
                       borderRadius: BorderRadius.circular(15),
                     ),
                     label: const Text(
                       "Description",
-                      style: TextStyle(color: Colors.blue),
+                      style: TextStyle(color: coloruses),
                     ),
                   ),
                   validator: (String? value) {
@@ -476,23 +716,27 @@ class _PostClientState extends State<PostClient> {
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15),
                     border: Border.all(width: 1.5, color: coloruses)),
-                child: DropdownButton(
-                  value: valueCategoryList,
-                  onChanged: (String? value) {
-                    setState(() {
-                      valueCategoryList = value!;
-                      subCategoryList = listfill(valueCategoryList);
-                      valueSubCategoryList = subCategoryList[0];
-                    });
-                  },
-                  items: categoryList
-                      .map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                  borderRadius: BorderRadius.circular(15),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: DropdownButton(
+                    isExpanded: true,
+                    value: valueCategoryList,
+                    onChanged: (String? value) {
+                      setState(() {
+                        valueCategoryList = value!;
+                        subCategoryList = _listfill(valueCategoryList);
+                        valueSubCategoryList = subCategoryList[0];
+                      });
+                    },
+                    items: categoryList
+                        .map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                    borderRadius: BorderRadius.circular(15),
+                  ),
                 ),
               ),
             ),
@@ -504,21 +748,25 @@ class _PostClientState extends State<PostClient> {
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15),
                     border: Border.all(width: 1.5, color: coloruses)),
-                child: DropdownButton(
-                  value: valueSubCategoryList,
-                  onChanged: (String? value) {
-                    setState(() {
-                      valueSubCategoryList = value!;
-                    });
-                  },
-                  items: subCategoryList
-                      .map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                  borderRadius: BorderRadius.circular(15),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: DropdownButton(
+                    isExpanded: true,
+                    value: valueSubCategoryList,
+                    onChanged: (String? value) {
+                      setState(() {
+                        valueSubCategoryList = value!;
+                      });
+                    },
+                    items: subCategoryList
+                        .map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                    borderRadius: BorderRadius.circular(15),
+                  ),
                 ),
               ),
             ),
@@ -533,17 +781,16 @@ class _PostClientState extends State<PostClient> {
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
                       borderSide:
-                          const BorderSide(color: Colors.blueGrey, width: 1.5),
+                          const BorderSide(color: coloruses, width: 1.5),
                       borderRadius: BorderRadius.circular(15),
                     ),
-                    label: const Text(
+                    hintText:
                       "Budget",
-                      style: TextStyle(color: Colors.blue),
-                    ),
+
                   ),
                   validator: (String? value) {
-                     if (int.parse(value!) <= 0) {
-                    return "Enter true price";
+                    if (int.parse(value!) <= 0) {
+                      return "Enter true price";
                     }
                     if (value.isNotEmpty) {
                       return null;
@@ -594,6 +841,8 @@ class _PostClientState extends State<PostClient> {
                         "Budget": _budget.text,
                         'timestamp': Timestamp.now(),
                       });
+                      _budget.clear();
+                      _disc.clear();
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) {
                         return Homepage();

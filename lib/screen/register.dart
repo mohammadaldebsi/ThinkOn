@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors, use_build_context_synchronously
 
-import 'dart:ffi';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -12,10 +12,13 @@ import 'package:icons_plus/icons_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class Register1 extends StatefulWidget {
-  const Register1({Key? key}) : super(key: key);
+  final List<String>UsersEmail;
+
 
   @override
   State<Register1> createState() => _Register1State();
+
+  Register1(this.UsersEmail);
 }
 
 class _Register1State extends State<Register1> {
@@ -23,8 +26,10 @@ class _Register1State extends State<Register1> {
   late String Email, Password, ConfirmPassword;
   bool result = false;
   bool resultPassword = false;
-  bool foundEmail=false;
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool loading = true;
+
+  final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,26 +62,19 @@ class _Register1State extends State<Register1> {
                     height: 10,
                   ),
                   TextFormField(
-                    keyboardType: TextInputType.emailAddress,
+                    keyboardType: TextInputType.number,
                     onChanged: (value) {
                       Email = value + "@thinkon.com";
                     },
                     decoration: decorationTextField("ID"),
                     validator: (String? value) {
-                      for (int i = 0; i < value!.length; i++) {
-                    if(value[i].contains( RegExp(r'[0-9]'))) {
-                      return null;
-                    }
-                    else {
-                      return "id should be number";
-                    }
-                    }
-                      if(value.length !=10) {
+                      if(value!.length !=9) {
                         return "Id should be 10 index";
                       }
-                      if(foundEmail) {
-                        return "The email address is already in use";
+                      else if(widget.UsersEmail.contains(value)){
+                        return "Id already used";
                       }
+
 
                     },
                   ),
@@ -90,8 +88,11 @@ class _Register1State extends State<Register1> {
                     },
                     decoration: decorationTextField("Password"),
                     validator: (String? value) {
-                      if (value!.length <= 7) {
-                        return "password should be more than 7";
+                      if(!value![0].contains(RegExp(r'[A-Z]'))){
+                        return "first latter should be CAb";
+                      }
+                      if (value!.length <= 6) {
+                        return "password should be more than 6";
                       } else
                         return null;
                     },
@@ -144,14 +145,11 @@ class _Register1State extends State<Register1> {
                                       email: Email, password: Password);
                               _Auth.signInWithEmailAndPassword(
                                   email: Email, password: Password);
-                              Navigator.push(context,
+                              Navigator.pushReplacement(context,
                                   MaterialPageRoute(builder: (context) {
                                 return information();
                               }));
                             } catch (e) {
-                              setState(() {
-                                foundEmail=true;
-                              });
                               print(e);
                             }
                           }

@@ -62,121 +62,129 @@ class _ProfilePageState extends State<_ProfilePage> {
   }
 
   Widget BuildButtomSheet(BuildContext context) {
-    return Container(
-      height: 400,
-      decoration: BoxDecoration(
-        color: Color(0xff757575),
-      ),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0),
       child: Container(
         decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-                topRight: Radius.circular(30), topLeft: Radius.circular(30))),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                height: 6,
-              ),
-              _CreateListinDrawer("Setting"),
-              SizedBox(
-                height: 6,
-              ),
-              Center(
-                child: Container(
-                  width: 300,
-                  decoration: BoxDecoration(
-                      color: Color(0xFF223843),
-                      borderRadius: BorderRadius.circular(20)),
-                  child: MaterialButton(
-                    child: Text(
-                      "Request",
-                      style: TextStyle(color: Colors.white),
+          color: Color(0xff757575),
+        ),
+        child: Container(
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(30), topLeft: Radius.circular(30))),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: 6,
+                ),
+                _CreateListinDrawer("Setting"),
+                SizedBox(
+                  height: 6,
+                ),
+                Center(
+                  child: Container(
+                    width: 300,
+                    decoration: BoxDecoration(
+                        color: Color(0xFF223843),
+                        borderRadius: BorderRadius.circular(20)),
+                    child: MaterialButton(
+                      child: Text(
+                        "Request",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      onPressed: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return Request();
+                        }));
+                      },
                     ),
-                    onPressed: () { Navigator.push(context, MaterialPageRoute(builder: (context){
-                      return Request();
-                    }));},
                   ),
                 ),
-              ),
-              SizedBox(
-                height: 6,
-              ),
-              Center(
-                child: Container(
-                  width: 300,
-                  decoration: BoxDecoration(
-                      color: Color(0xFF223843),
-                      borderRadius: BorderRadius.circular(20)),
-                  child: MaterialButton(
-                    child: Text(
-                      "Payment",
-                      style: TextStyle(color: Colors.white),
+                SizedBox(
+                  height: 6,
+                ),
+                Center(
+                  child: Container(
+                    width: 300,
+                    decoration: BoxDecoration(
+                        color: Color(0xFF223843),
+                        borderRadius: BorderRadius.circular(20)),
+                    child: MaterialButton(
+                      child: Text(
+                        "Payment",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      onPressed: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return MySample();
+                        }));
+                      },
                     ),
-                    onPressed: () { Navigator.push(context, MaterialPageRoute(builder: (context){
-                      return MySample();
-                    }));},
                   ),
                 ),
-              ),
-              SizedBox(
-                height: 6,
-              ),
-              Center(
-                child: Container(
-                  width: 300,
-                  decoration: BoxDecoration(
-                      color: Color(0xFF223843),
-                      borderRadius: BorderRadius.circular(20)),
-                  child: MaterialButton(
-                    child: Text(
-                      "Edit Profile",
-                      style: TextStyle(color: Colors.white),
+                SizedBox(
+                  height: 6,
+                ),
+                Center(
+                  child: Container(
+                    width: 300,
+                    decoration: BoxDecoration(
+                        color: Color(0xFF223843),
+                        borderRadius: BorderRadius.circular(20)),
+                    child: MaterialButton(
+                      child: Text(
+                        "Edit Profile",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      onPressed: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return EditProfile();
+                        }));
+                      },
                     ),
-                    onPressed: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) {
-                        return EditProfile();
-                      }));
-                    },
                   ),
                 ),
-              ),
-              SizedBox(
-                height: 6,
-              ),
-              _CreateListinDrawer("Help"),
-              SizedBox(
-                height: 6,
-              ),
-              Center(
-                child: Container(
-                  width: 300,
-                  decoration: BoxDecoration(
-                      color: Color(0xFF223843),
-                      borderRadius: BorderRadius.circular(20)),
-                  child: MaterialButton(
-                    child: Text(
-                      "Logout",
-                      style: TextStyle(color: Colors.white),
+                SizedBox(
+                  height: 6,
+                ),
+                _CreateListinDrawer("Help"),
+                SizedBox(
+                  height: 6,
+                ),
+                Center(
+                  child: Container(
+                    width: 300,
+                    decoration: BoxDecoration(
+                        color: Color(0xFF223843),
+                        borderRadius: BorderRadius.circular(20)),
+                    child: MaterialButton(
+                      child: Text(
+                        "Logout",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      onPressed: () {
+                        _Auth.signOut();
+                        Navigator.of(context, rootNavigator: true)
+                            .pushAndRemoveUntil(
+                          MaterialPageRoute(
+                            builder: (BuildContext context) {
+                              return Login();
+                            },
+                          ),
+                          (_) => false,
+                        );
+                      },
                     ),
-                    onPressed: () {
-                      _Auth.signOut();
-                      Navigator.of(context, rootNavigator: true)
-                          .pushAndRemoveUntil(
-                        MaterialPageRoute(
-                          builder: (BuildContext context) {
-                            return Login();
-                          },
-                        ),
-                        (_) => false,
-                      );
-                    },
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -191,15 +199,15 @@ class _ProfilePageState extends State<_ProfilePage> {
           toolbarHeight: 200,
           shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.only(
-                  bottomRight: Radius.circular(50),
-                  bottomLeft: Radius.circular(50))),
+                  bottomRight: Radius.circular(30),
+                  bottomLeft: Radius.circular(30))),
           flexibleSpace: Container(
             width: double.infinity,
             height: double.infinity,
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.only(
-                    bottomRight: Radius.circular(50),
-                    bottomLeft: Radius.circular(50)),
+                    bottomRight: Radius.circular(30),
+                    bottomLeft: Radius.circular(30)),
                 image: DecorationImage(
                     image: AssetImage("images/ASU.jpg"), fit: BoxFit.cover)),
             child: MaterialButton(
@@ -232,21 +240,6 @@ class _ProfilePageState extends State<_ProfilePage> {
                     children: [
                       Row(
                         children: [
-                          Container(
-                            margin: const EdgeInsets.fromLTRB(0, 0, 20, 10),
-                            width: 80,
-                            height: 80,
-                            child: MaterialButton(onPressed: () {}),
-                            decoration: BoxDecoration(
-                                boxShadow: const [
-                                  BoxShadow(
-                                      color: Color(0xFF223843), blurRadius: 5),
-                                ],
-                                borderRadius: BorderRadius.circular(360),
-                                image: const DecorationImage(
-                                    fit: BoxFit.cover,
-                                    image: AssetImage("images/profile.jpg"))),
-                          ),
                           StreamBuilder<DocumentSnapshot>(
                             stream: FirebaseFirestore.instance
                                 .collection('Users')
@@ -260,15 +253,53 @@ class _ProfilePageState extends State<_ProfilePage> {
                                   ),
                                 );
                               }
-                              final messages = snapshot.data!.get("Username");
-
-                              return Text(messages,
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 18,
-                                  ));
+                              final String messages =
+                                  snapshot.data!.get("Gender");
+                              if (messages.toLowerCase() == "male") {
+                                return Container(
+                                  margin:
+                                      const EdgeInsets.fromLTRB(0, 0, 20, 10),
+                                  width: 80,
+                                  height: 80,
+                                  child: MaterialButton(onPressed: () {}),
+                                  decoration: BoxDecoration(
+                                      boxShadow: const [
+                                        BoxShadow(
+                                            color: Color(0xFF223843),
+                                            blurRadius: 5),
+                                      ],
+                                      borderRadius: BorderRadius.circular(360),
+                                      image: const DecorationImage(
+                                          fit: BoxFit.cover,
+                                          image: AssetImage(
+                                              "images/profile.jpg"))),
+                                );
+                              } else {
+                               return Container(
+                                  margin:
+                                      const EdgeInsets.fromLTRB(0, 0, 20, 10),
+                                  width: 80,
+                                  height: 80,
+                                  child: MaterialButton(onPressed: () {}),
+                                  decoration: BoxDecoration(
+                                      boxShadow: const [
+                                        BoxShadow(
+                                            color: Color(0xFF223843),
+                                            blurRadius: 5),
+                                      ],
+                                      borderRadius: BorderRadius.circular(360),
+                                      image: const DecorationImage(
+                                          fit: BoxFit.cover,
+                                          image: AssetImage(
+                                              "images/girl.jpg"))),
+                                );
+                              }
                             },
-                          )
+                          ),
+                          Text(
+                            "${FirebaseAuth.instance.currentUser?.displayName}",
+                            style: TextStyle(color: coloruses, fontSize: 20),
+                          ),
                         ],
                       ),
                       Text("Id: $id"),
@@ -324,9 +355,13 @@ class _ProfilePageState extends State<_ProfilePage> {
                                 unselectedLabelColor: Colors.black,
                                 indicatorSize: TabBarIndicatorSize.label,
                                 tabs: [
-                                  Tab(child: Text("Social Media"),),
+                                  Tab(
+                                    child: Text("Social Media"),
+                                  ),
                                   Tab(child: Text("Seller")),
-                                  Tab(child: Text("Client"),),
+                                  Tab(
+                                    child: Text("Client"),
+                                  ),
                                 ],
                               ),
                             ),
@@ -411,6 +446,7 @@ class _ProfilepostState extends State<_Profilepost> {
                   image: DecorationImage(
                       image: AssetImage("images/3.jpg"), fit: BoxFit.fill)),
             ),
+
           ],
         ),
       ],
@@ -433,7 +469,8 @@ class _ClientUserState extends State<ClientUser> {
     await FirebaseFirestore.instance
         .collection("Users")
         .doc(loggedInUser?.uid)
-        .collection("ClientPosts").orderBy("timestamp")
+        .collection("ClientPosts")
+        .orderBy("timestamp")
         .get()
         .then((querySnapshot) => {
               querySnapshot.docs.reversed.forEach((doc) => {
@@ -520,14 +557,14 @@ class _SellerUserState extends State<SellerUser> {
     await FirebaseFirestore.instance
         .collection("Users")
         .doc(loggedInUser?.uid)
-        .collection("SellerPosts").orderBy("timestamp")
+        .collection("SellerPosts")
+        .orderBy("timestamp")
         .get()
         .then((querySnapshot) => {
               querySnapshot.docs.reversed.forEach((doc) => {
                     sellerList.add(SellerUserModel(
                       doc["Category"],
                       doc["SubCategory"],
-                      doc["Description"],
                       doc["BasicDescription"],
                       doc["PremiumPrice"],
                       doc["PremiumDescription"],

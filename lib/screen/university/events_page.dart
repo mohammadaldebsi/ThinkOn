@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:readmore/readmore.dart';
 import 'package:thinkon/screen/university/university_page.dart';
+import 'package:thinkon/widget/constant.dart';
 
 
 class EventUniversity extends StatelessWidget {
@@ -28,14 +29,14 @@ class _EventUniversityState extends State<_EventUniversity> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        toolbarHeight: 80,
-        title: Text("ThinkOn",style:TextStyle(color:Colors.blue)),
+        toolbarHeight: 70,
+        title: Text("ThinkOn",style:TextStyle(color:coloruses)),
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
-                bottomRight: Radius.circular(50),
-                bottomLeft: Radius.circular(50))),
+                bottomRight: Radius.circular(30),
+                bottomLeft: Radius.circular(30))),
         leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.black),
+            icon: const Icon(Icons.arrow_back, color: coloruses),
             onPressed: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) {
                 return University();
@@ -54,17 +55,21 @@ class _EventUniversityState extends State<_EventUniversity> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: _Events(),
+                    child: _Events(AssetImage("images/hultprize.jpg")),
+                  ),
+  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: _Events(AssetImage("images/JPC.jpg")),
                   ),
 
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: _Events(),
+                    child: _Events(AssetImage("images/UIUX.jpg")),
                   ),
 
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: _Events(),
+                    child: _Events(AssetImage("images/SEC.jpg")),
                   ),
                 ],
               ),
@@ -77,10 +82,12 @@ class _EventUniversityState extends State<_EventUniversity> {
 }
 
 class _Events extends StatefulWidget {
-  const _Events({Key? key}) : super(key: key);
 
+AssetImage view;
   @override
   State<_Events> createState() => _EventsState();
+
+_Events(this.view);
 }
 
 class _EventsState extends State<_Events> {
@@ -88,45 +95,16 @@ class _EventsState extends State<_Events> {
   Widget build(BuildContext context) {
     return Container(
 
-        height: 100,
+        height: 150,
+        width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
           color: Colors.white,
+          image: DecorationImage(image:widget.view,fit: BoxFit.cover),
           borderRadius: BorderRadius.circular(10),
           boxShadow: const [
             BoxShadow(color: Colors.black, blurRadius: 5),
           ],
         ),
-        child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Container(
-              height: 100,
-              child: Row(children: [
-                Container(
-                  width: 150,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(10),
-                          bottomLeft: Radius.circular(10)),
-                      image: DecorationImage(
-                          image: AssetImage("images/hultprize.jpg"),
-                          fit: BoxFit.fitHeight)),
-                ),
-                Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                      SizedBox(
-                        width: 5,
-                      ),
-                      Text(
-                        "Hult prize",
-                        style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.indigo),
-                      ),
-                    ]))
-              ]))
-        ]));
+        );
   }
 }

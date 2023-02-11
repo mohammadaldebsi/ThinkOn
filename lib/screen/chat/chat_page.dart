@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_constructors, must_be_immutable
 
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:flutter/material.dart';
@@ -17,8 +19,15 @@ class ChatScreen extends StatefulWidget {
 }
 
 class ChatScreenState extends State<ChatScreen> {
+  bool _isLoading=true;
   @override
   void initState() {
+    Timer(Duration(seconds: 2), () {
+
+      setState(() {
+        _isLoading = false; // <-- Code run after delay
+      });
+    });
     super.initState();
   }
   @override
@@ -36,7 +45,7 @@ class ChatScreenState extends State<ChatScreen> {
               borderRadius: BorderRadius.only(
                   bottomRight: Radius.circular(50),
                   bottomLeft: Radius.circular(50)))),
-      body:SafeArea(child: _MessagesStream())
+      body:_isLoading ?Center(child: CircularProgressIndicator(color: coloruses,)):SafeArea(child: _MessagesStream())
     );
   }
 }
@@ -135,11 +144,9 @@ class _MessagesStream extends StatelessWidget {
             }
           }
         }
-        return Expanded(
-          child: ListView(
-            padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
-            children: listTile,
-          ),
+        return ListView(
+          padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
+          children: listTile,
         );
       },
     );

@@ -107,12 +107,11 @@ class _SellerState extends State<Seller> {
                       decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(10),
-                          boxShadow: const [
-                            BoxShadow(color: Colors.black, blurRadius: 3),
-                          ]),
+                          boxShadow:  [BoxShadow(color: coloruses,blurRadius: 4) , ]),
                       child: Padding(
                         padding: const EdgeInsets.all(5.0),
                         child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             StreamBuilder<DocumentSnapshot>(
                               stream: FirebaseFirestore.instance
@@ -128,10 +127,9 @@ class _SellerState extends State<Seller> {
                                   );
                                 }
                                 final messages = snapshot.data!.get("Username");
-
                                 return Text(messages,
                                     style: TextStyle(
-                                      color: Colors.black,
+                                      color: coloruses,
                                       fontSize: 15,
                                     ));
                               },
@@ -141,14 +139,15 @@ class _SellerState extends State<Seller> {
                             ),
                             Text(widget.sellerList[index].subCategory,
                                 style: TextStyle(
-                                  color: Colors.black,
+                                  color: coloruses,
                                   fontSize: 15,
                                 )),
                             Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
                               children: [
-                                Text(widget.sellerList[index].premiumprice,
+                                Text("${widget.sellerList[index].premiumprice} JD",
                                     style: TextStyle(
-                                      color: Colors.black,
+                                      color: coloruses,
                                       fontSize: 15,
                                     )),
                               ],
@@ -203,60 +202,54 @@ class _ClientState extends State<Client> {
                       decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(10),
-                          boxShadow: const [
-                            BoxShadow(color: Colors.black, blurRadius: 3),
-                          ]),
-                      child: Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            StreamBuilder<DocumentSnapshot>(
-                              stream: FirebaseFirestore.instance
-                                  .collection('Users')
-                                  .doc(widget.clientList[index].uid)
-                                  .snapshots(),
-                              builder: (context, snapshot) {
-                                if (!snapshot.hasData) {
-                                  return Center(
-                                    child: CircularProgressIndicator(
-                                      backgroundColor: Colors.lightBlueAccent,
-                                    ),
-                                  );
-                                }
-                                final messages = snapshot.data!.get("Username");
+                          boxShadow:  [BoxShadow(color: coloruses,blurRadius: 4) ]),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          StreamBuilder<DocumentSnapshot>(
+                            stream: FirebaseFirestore.instance
+                                .collection('Users')
+                                .doc(widget.clientList[index].uid)
+                                .snapshots(),
+                            builder: (context, snapshot) {
+                              if (!snapshot.hasData) {
+                                return Center(
+                                  child: CircularProgressIndicator(
+                                    backgroundColor: Colors.lightBlueAccent,
+                                  ),
+                                );
+                              }
+                              final messages = snapshot.data!.get("Username");
 
-                                return Text(messages,
-                                    style: TextStyle(
-                                      color: coloruses,
-                                      fontSize: 15,
-                                    ));
-                              },
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Text(widget.clientList[index].subCategory,
-                                style: TextStyle(
-                                  color: coloruses,
-                                  fontSize: 15,
-                                )),
-                            SizedBox(height: 35,),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
+                              return Text(messages,
+                                  style: TextStyle(
+                                    color: coloruses,
+                                    fontSize: 15,
+                                  ));
+                            },
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Text(widget.clientList[index].subCategory,
+                              style: TextStyle(
+                                color: coloruses,
+                                fontSize: 15,
+                              )),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
 
-                              children: [
+                            children: [
 
-                                Text("Budget:${widget.clientList[index].budget}",
-                                    style: TextStyle(
-                                      color:coloruses,
-                                      fontSize: 15,
+                              Text("${widget.clientList[index].budget} JD",
+                                  style: TextStyle(
+                                    color:coloruses,
+                                    fontSize: 15,
 
-                                    )),
-                              ],
-                            )
-                          ],
-                        ),
+                                  )),
+                            ],
+                          )
+                        ],
                       ),
                     ),
                   );

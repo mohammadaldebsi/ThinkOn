@@ -3,6 +3,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:thinkon/screen/home_page.dart';
+import 'package:thinkon/screen/posts/post_page.dart';
 
 import 'package:thinkon/widget/constant.dart';
 
@@ -21,11 +23,17 @@ class PostSellers extends StatefulWidget {
 class _PostSellersState extends State<PostSellers> {
   bool load = true;
   UserModel user = UserModel("", "", "");
+  final TextEditingController _Price = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  bool? itsMe = true;
   @override
   void initState() {
     getsellerdata().then((value) => setState(() {
           load = false;
         }));
+    if (widget.seller.uid == FirebaseAuth.instance.currentUser?.uid) {
+      itsMe = false;
+    }
     // TODO: implement initState
     super.initState();
   }
@@ -33,45 +41,140 @@ class _PostSellersState extends State<PostSellers> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           backgroundColor: coloruses,
-          toolbarHeight: 80,
+          toolbarHeight: 70,
           shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.only(
-                  bottomRight: Radius.circular(50),
-                  bottomLeft: Radius.circular(50))),
+                  bottomRight: Radius.circular(30),
+                  bottomLeft: Radius.circular(30))),
           actions: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: IconButton(
-                  onPressed: () {
-                    if (widget.seller.uid !=
-                        FirebaseAuth.instance.currentUser?.uid) {
-                      FirebaseFirestore.instance
-                          .collection("Users")
-                          .doc(widget.seller.uid)
-                          .collection("Seller-Request")
-                          .doc()
-                          .set({
-                        "request-from": FirebaseAuth.instance.currentUser?.uid,
-                        "timestamp": Timestamp.now(),
-                      });
-                      FirebaseFirestore.instance
-                          .collection("Users")
-                          .doc(widget.seller.uid)
-                          .collection("User-Request")
-                          .doc()
-                          .set({
-                        "request-from": FirebaseAuth.instance.currentUser?.uid,
-                        "timestamp": Timestamp.now(),
-                      });
-                      Navigator.pop(context);
-                    }
-                  },
-                  icon: Icon(
-                    Icons.add_circle_outline,
-                  )),
-            )
+            if (widget.seller.uid != FirebaseAuth.instance.currentUser?.uid)
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextButton(
+                    onPressed: () {
+                      if (itsMe!) {
+                        showModalBottomSheet(
+                            context: context,
+                            builder: (context) => Padding(
+                                padding: const EdgeInsets.only(bottom: 8.0),
+                                child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Color(0xff757575),
+                                    ),
+                                    child: Container(
+                                      height: 200,
+                                      decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.only(
+                                              topRight: Radius.circular(30),
+                                              topLeft: Radius.circular(30))),
+                                      child: Form(
+                                        key: _formKey,
+                                        child: SingleChildScrollView(
+                                          child: Column(
+                                            children: [
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.all(15.0),
+                                                child: TextFormField(
+                                                  controller: _Price,
+                                                  decoration: InputDecoration(
+                                                    border: OutlineInputBorder(
+                                                      borderSide:
+                                                          const BorderSide(
+                                                              width: 1.5),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              15),
+                                                    ),
+                                                    label: const Text(
+                                                      "Price",
+                                                      style: TextStyle(
+                                                          color: Colors.black),
+                                                    ),
+                                                  ),
+                                                  keyboardType:
+                                                      TextInputType.number,
+                                                  validator: (value) {
+                                                    if (value!.isNotEmpty) {
+                                                      return null;
+                                                    } else {
+                                                      return "Enter price";
+                                                    }
+                                                  },
+                                                ),
+                                              ),
+                                              ElevatedButton(
+                                                onPressed: () {
+                                                  if (_formKey.currentState!
+                                                      .validate()) {
+                                                    if (widget.seller.uid !=
+                                                        FirebaseAuth.instance
+                                                            .currentUser?.uid) {
+                                                      FirebaseFirestore.instance
+                                                          .collection("Users")
+                                                          .doc(
+                                                              widget.seller.uid)
+                                                          .collection(
+                                                              "Seller-Request")
+                                                          .doc()
+                                                          .set({
+                                                        "request-from":
+                                                            FirebaseAuth
+                                                                .instance
+                                                                .currentUser
+                                                                ?.uid,
+                                                        "Price": _Price.text,
+                                                        "status": "wait",
+                                                        "timestamp":
+                                                            Timestamp.now(),
+                                                      });
+                                                      FirebaseFirestore.instance
+                                                          .collection("Users")
+                                                          .doc(FirebaseAuth
+                                                              .instance
+                                                              .currentUser
+                                                              ?.uid)
+                                                          .collection(
+                                                              "Wait-Accept")
+                                                          .doc()
+                                                          .set({
+                                                        "request-to":
+                                                            widget.seller.uid,
+                                                        "Price": _Price.text,
+                                                        "status": "wait",
+                                                        "timestamp":
+                                                            Timestamp.now(),
+                                                      });
+                                                      ScaffoldMessenger.of(
+                                                              context)
+                                                          .showSnackBar(SnackBar(
+                                                              content: Text(
+                                                                  "waiting to accept")));
+                                                      Navigator.pop(context);
+                                                    }
+                                                  }
+                                                },
+                                                child: Text("Request"),
+                                                style: ElevatedButton.styleFrom(
+                                                  primary: coloruses,
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ))));
+                      }
+                    },
+                    child: Text(
+                      "Request",
+                      style: TextStyle(color: Colors.white),
+                    )),
+              )
           ],
           leading: IconButton(
               icon: const Icon(Icons.arrow_back, color: Colors.white),
@@ -88,10 +191,61 @@ class _PostSellersState extends State<PostSellers> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          CircleAvatar(
-                            maxRadius: MediaQuery.of(context).size.width / 10,
-                            backgroundImage: AssetImage("images/profile.jpg"),
-                            child: MaterialButton(onPressed: () {}),
+                          StreamBuilder<DocumentSnapshot>(
+                            stream: FirebaseFirestore.instance
+                                .collection('Users')
+                                .doc(widget.seller.uid)
+                                .snapshots(),
+                            builder: (context, snapshot) {
+                              if (!snapshot.hasData) {
+                                return Center(
+                                  child: CircularProgressIndicator(
+                                    backgroundColor: Colors.lightBlueAccent,
+                                  ),
+                                );
+                              }
+                              final String messages =
+                              snapshot.data!.get("Gender");
+                              if (messages.toLowerCase() == "male") {
+                                return Container(
+                                  margin:
+                                  const EdgeInsets.fromLTRB(0, 0, 20, 10),
+                                  width: 80,
+                                  height: 80,
+                                  child: MaterialButton(onPressed: () {}),
+                                  decoration: BoxDecoration(
+                                      boxShadow: const [
+                                        BoxShadow(
+                                            color: Color(0xFF223843),
+                                            blurRadius: 5),
+                                      ],
+                                      borderRadius: BorderRadius.circular(360),
+                                      image: const DecorationImage(
+                                          fit: BoxFit.cover,
+                                          image: AssetImage(
+                                              "images/profile.jpg"))),
+                                );
+                              } else {
+                                return Container(
+                                  margin:
+                                  const EdgeInsets.fromLTRB(0, 0, 20, 10),
+                                  width: 80,
+                                  height: 80,
+                                  child: MaterialButton(onPressed: () {}),
+                                  decoration: BoxDecoration(
+                                      boxShadow: const [
+                                        BoxShadow(
+                                            color: Color(0xFF223843),
+                                            blurRadius: 5),
+                                      ],
+                                      borderRadius: BorderRadius.circular(360),
+                                      image: const DecorationImage(
+                                          fit: BoxFit.cover,
+                                          image: AssetImage(
+                                              "images/girl.jpg"))),
+                                );
+                              }
+                            },
                           ),
                           Text(user.name.toString(),
                               style: TextStyle(
@@ -136,6 +290,31 @@ class _PostSellersState extends State<PostSellers> {
                               color: coloruses,
                             )),
                       ),
+                      Text(
+                        "About me:",
+                        style: TextStyle(color: coloruses),
+                      ),
+                      StreamBuilder<DocumentSnapshot>(
+                        stream: FirebaseFirestore.instance
+                            .collection('Users')
+                            .doc(widget.seller.uid)
+                            .snapshots(),
+                        builder: (context, snapshot) {
+                          if (!snapshot.hasData) {
+                            return Center(
+                              child: CircularProgressIndicator(
+                                backgroundColor: Colors.lightBlueAccent,
+                              ),
+                            );
+                          }
+                          final messages = snapshot.data!.get("Bio");
+
+                          return Text(
+                            "$messages",
+                            style: TextStyle(color: coloruses),
+                          );
+                        },
+                      ),
                       DefaultTabController(
                         length: 2, // length of tabs
                         child: Column(
@@ -149,6 +328,7 @@ class _PostSellersState extends State<PostSellers> {
                                 tabs: [
                                   Tab(text: 'Basic'),
                                   Tab(text: 'Premium'),
+
                                 ],
                               ),
                             ),
@@ -209,12 +389,11 @@ class _BasicinformationState extends State<_Basicinformation> {
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text(widget.seller.premiumdesc,
+              child: Text(widget.seller.basicdesc,
                   style: TextStyle(color: Colors.white)),
-            ),
-            Padding(
+            ),Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text(widget.seller.premiumprice,
+              child: Text("${widget.seller.premiumprice} JD",
                   style: TextStyle(color: Colors.white)),
             ),
           ]),
@@ -242,6 +421,7 @@ class _BasicinformationState extends State<_Basicinformation> {
               }
             },
             child: Text("Contact Us", style: TextStyle(color: Colors.white)),
+
           ),
         )
       ],
@@ -277,7 +457,7 @@ class _PremiuminformationState extends State<_Premiuminformation> {
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text(widget.seller.description,
+            child: Text("${widget.seller.basicprice} JD",
                 style: TextStyle(color: Colors.white)),
           ),
         ]),

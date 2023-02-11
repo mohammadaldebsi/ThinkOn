@@ -5,6 +5,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:thinkon/screen/Login_Page.dart';
 
+import '../NavigationBar_page.dart';
+import '../widget/constant.dart';
+
 class information extends StatelessWidget {
   const information({Key? key}) : super(key: key);
 
@@ -20,14 +23,14 @@ class information1 extends StatefulWidget {
   @override
   State<information1> createState() => _information1State();
 }
-
+const List<String> list = <String>['Male', 'Female',];
 class _information1State extends State<information1> {
   final FirebaseFirestore _fireStore = FirebaseFirestore.instance;
   final FirebaseAuth _Auth = FirebaseAuth.instance;
   User? loggedInUser = FirebaseAuth.instance.currentUser;
   late String username, bio, phone;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
+  String dropdownValue = list.first;
   @override
   void initState() {
     super.initState();
@@ -161,6 +164,33 @@ class _information1State extends State<information1> {
                   const SizedBox(
                     height: 10,
                   ),
+              Center(
+
+                child: DropdownButton<String>(
+
+                  value: dropdownValue,
+
+                  icon: const Icon(Icons.arrow_circle_down_outlined,color: coloruses,),
+                  elevation: 16,
+                  style: const TextStyle(color: coloruses),
+                  underline: Container(
+                    height: 2,
+                    color: coloruses,
+                  ),
+                  onChanged: (String? value) {
+                    // This is called when the user selects an item.
+                    setState(() {
+                      dropdownValue = value!;
+                    });
+                  },
+                  items: list.map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                ),
+              ),
                   Container(
                     width: double.maxFinite,
                     decoration: BoxDecoration(
@@ -186,12 +216,12 @@ class _information1State extends State<information1> {
                             "Phone": phone,
                             "Bio": bio,
                             "Uuid": loggedInUser!.uid,
+                            "Gender":dropdownValue,
                           });
 
-                          _Auth.signOut();
-                          Navigator.push(context,
+                          Navigator.pushReplacement(context,
                               MaterialPageRoute(builder: (context) {
-                            return const Login();
+                            return Navigatorbar1();
                           }));
                         }
                       },

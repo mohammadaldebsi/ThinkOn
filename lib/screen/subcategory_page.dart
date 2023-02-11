@@ -9,6 +9,7 @@ import 'package:thinkon/screen/Category.dart';
 import 'package:thinkon/widget/constant.dart';
 
 import '../models/SellerModels.dart';
+import '../models/cubcategory.dart';
 
 class SubCategory extends StatelessWidget {
   const SubCategory(
@@ -46,7 +47,7 @@ class SubCategory1 extends StatefulWidget {
 }
 
 class _SubCategory1State extends State<SubCategory1> {
-  late List<String> names = listfill(widget.Categoriesname);
+  late List<SubCategoryModel> names = listfill(widget.Categoriesname);
 
   @override
   Widget build(BuildContext context) {
@@ -54,10 +55,9 @@ class _SubCategory1State extends State<SubCategory1> {
       appBar: AppBar(
           leading: IconButton(
               icon: const Icon(Icons.arrow_back, color: Colors.white),
-              onPressed: () =>
-                  Navigator.pop(context)),
-          title:
-              Text(widget.Categoriesname, style: TextStyle(color: Colors.white)),
+              onPressed: () => Navigator.pop(context)),
+          title: Text(widget.Categoriesname,
+              style: TextStyle(color: Colors.white)),
           centerTitle: true,
           backgroundColor: coloruses,
           toolbarHeight: 80,
@@ -66,46 +66,30 @@ class _SubCategory1State extends State<SubCategory1> {
                   bottomRight: Radius.circular(50),
                   bottomLeft: Radius.circular(50)))),
       body: Padding(
-        padding: const EdgeInsets.only(top: 8.0,bottom: 8),
-        child: Container(
-          width: (MediaQuery.of(context).size.width),
-          height: (MediaQuery.of(context).size.height),
-          child: SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            child: Column(
-              children: [
-                for (int i = 0; i < names.length; i++) ...[
-                  Row(
-                    children: [
-                      _CreateSubCategory(
-                          name: names[i],
-                          clientList: widget.clientList
-                              .where((element) =>
-                                  element.subCategory.toLowerCase().trim() ==
-                                  names[i].toLowerCase().trim())
-                              .toList(),
-                          sellerList: widget.sellerList
-                              .where((element) =>
-                                  element.subCategory.toLowerCase().trim() ==
-                                  names[i].toLowerCase().trim())
-                              .toList()),
-                      _CreateSubCategory(
-                          name: names[++i],
-                          clientList: widget.clientList
-                              .where((element) =>
-                                  element.subCategory.toLowerCase().trim() ==
-                                  names[i].toLowerCase().trim())
-                              .toList(),
-                          sellerList: widget.sellerList
-                              .where((element) =>
-                                  element.subCategory.toLowerCase().trim() ==
-                                  names[i].toLowerCase().trim())
-                              .toList()),
-                    ],
-                  ),
-                ]
-              ],
-            ),
+        padding: const EdgeInsets.only(top: 8.0, bottom: 8),
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Container(
+            width: (MediaQuery.of(context).size.width),
+            height: (MediaQuery.of(context).size.height),
+            child: GridView.builder(  gridDelegate:  SliverGridDelegateWithMaxCrossAxisExtent(
+                maxCrossAxisExtent: MediaQuery.of(context).size.width /2,
+                childAspectRatio: 3 / 2,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10),itemCount: names.length, itemBuilder: (BuildContext ctx, index) {
+              return   _CreateSubCategory(
+                  name: names[index],
+                  clientList: widget.clientList
+                      .where((element) =>
+                  element.subCategory.toLowerCase().trim() ==
+                      names[index].subcategory.toLowerCase().trim())
+                      .toList(),
+                  sellerList: widget.sellerList
+                      .where((element) =>
+                  element.subCategory.toLowerCase().trim() ==
+                      names[index].subcategory.toLowerCase().trim())
+                      .toList());
+            }),
           ),
         ),
       ),
@@ -120,7 +104,7 @@ class _CreateSubCategory extends StatefulWidget {
       required this.clientList,
       required this.sellerList})
       : super(key: key);
-  final String name;
+  final SubCategoryModel name;
   final List<ClientModel> clientList;
   final List<SellerModel> sellerList;
 
@@ -137,130 +121,147 @@ class _CreateSubCategoryState extends State<_CreateSubCategory> {
         width: (MediaQuery.of(context).size.width) / 2.1001,
         height: 150,
         decoration: BoxDecoration(
-          color: Colors.white,
+            color: Colors.white,
             borderRadius: BorderRadius.circular(10),
-          boxShadow: const [ BoxShadow(color: Colors.black, blurRadius: 1),]
-        ),
-        child: MaterialButton(
-            child: Text(widget.name,style: TextStyle(fontSize: 18,color: coloruses),),
-            onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return Post(clientList: widget.clientList,sellerList:widget.sellerList);
-              }));
-            }),
+            boxShadow: [
+              BoxShadow(color: coloruses, blurRadius: 4),
+            ],
+            image: DecorationImage(
+              image: widget.name.image,
+              fit: BoxFit.fill,
+            )),
+        child: MaterialButton(onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return Post(
+                clientList: widget.clientList, sellerList: widget.sellerList);
+          }));
+        }),
       ),
     );
   }
 }
 
-List<String> listfill(String name) {
-  List<String> Programming = [
-    "WordPress",
-    "Website Builders",
-    "Game Development",
-    "Mobile Apps",
-    "Web Programming",
-    "Desktop Applications",
-    "Chatbots",
-    "Cyber security",
-    "User Testing",
-    "QA & Review",
-    "E-Commerce Development",
-    "Other",
+List<SubCategoryModel> listfill(String name) {
+  List<SubCategoryModel> Programming = [
+    SubCategoryModel("WordPress", AssetImage("images/WordPress.jpg")),
+    SubCategoryModel(
+        "Website Builders", AssetImage("images/website builder 1.png")),
+    SubCategoryModel(
+        "Game Development", AssetImage("images/game-development.jpg")),
+    SubCategoryModel("Mobile Apps", AssetImage("images/mobile app.png")),
+    SubCategoryModel(
+        "Web Programming", AssetImage("images/web programming.jpg")),
+    SubCategoryModel(
+        "Desktop Applications", AssetImage("images/desktop applications.png")),
+    SubCategoryModel(
+        "Cyber security", AssetImage("images/cyber security.jpeg")),
+    SubCategoryModel("User Testing", AssetImage("images/user testing.png")),
+    SubCategoryModel("QA & Review", AssetImage("images/Qa and review.png")),
+    SubCategoryModel("Other", AssetImage("images/other.jpg")),
   ];
 
-  List<String> Data = [
-    "	Data Entry",
-    "	Data Processing",
-    "	Data Analytics",
-    "	Data Visualization",
-    "	Data Science",
-    "	Databases",
-    "	Data Engineering",
-    "	Other",
+  List<SubCategoryModel> Data = [
+    SubCategoryModel("	Data Entry", AssetImage("images/data entry.jpg")),
+    SubCategoryModel(
+        "	Data Processing", AssetImage("images/data processing.jpg")),
+    SubCategoryModel(
+        "	Data Analytics", AssetImage("images/data analytics.png")),
+    SubCategoryModel(
+        "	Data Visualization", AssetImage("images/data visualization.png")),
+    SubCategoryModel("	Data Science", AssetImage("images/data science.jpg")),
+    SubCategoryModel("	Databases", AssetImage("images/data base.jpg")),
+    SubCategoryModel(
+        "	Data Engineering", AssetImage("images/data engineering.jpg")),
+    SubCategoryModel("	Other", AssetImage("images/other.jpg")),
   ];
-  List<String> DigitalMarketing = [
-    "Marketing Strategy",
-    "Social Media Marketing",
-    "Social Media Advertising",
-    "Search Engine Optimization (SEO)",
-    "Search Engine Marketing (SEM)",
-    "Local SEO",
-    "Public Relations",
-    "Marketing Advice",
-    "Video Marketing",
-    "Email Marketing",
-    "Influencer Marketing",
-    "Web Analytics",
-    "Mobile App Marketing",
-    "Other",
+  List<SubCategoryModel> DigitalMarketing = [
+    SubCategoryModel(
+        "Marketing Strategy", AssetImage("images/marketing strategy.jpg")),
+    SubCategoryModel("Social Media Marketing",
+        AssetImage("images/social media marketing.png")),
+    SubCategoryModel("Social Media Advertising",
+        AssetImage("images/social media advertising.jpg")),
+    SubCategoryModel("Search Engine Optimization (SEO)",
+        AssetImage("images/search engine optimization.jpg")),
+    SubCategoryModel(
+        "Marketing Advice", AssetImage("images/Marketing Advice.jpg")),
+    SubCategoryModel(
+        "Video Marketing", AssetImage("images/Video Marketing.jpg")),
+    SubCategoryModel(
+        "Email Marketing", AssetImage("images/Email Marketing.jpg")),
+    SubCategoryModel(
+        "Influencer Marketing", AssetImage("images/Influencer Marketing.jpeg")),
+    SubCategoryModel(
+        "Mobile App Marketing", AssetImage("images/Mobile App Marketing.png")),
+    SubCategoryModel("Other", AssetImage("images/other.jpg")),
   ];
-  List<String> GraphicsDesign = [
-    "Website Design",
-    "App Design",
-    "UX Design",
-    "Landing Page Design",
-    "Icon Design",
-    "Logo Design",
-    "Fashion Design",
-    "Image Editing",
-    "Social Media Design",
-    "AR Filters & Lenses",
-    "Email Design",
-    "Other",
+  List<SubCategoryModel> GraphicsDesign = [
+    SubCategoryModel("Website Design", AssetImage("images/Website Design.jpg")),
+    SubCategoryModel("App Design", AssetImage("images/App Design.jpg")),
+    SubCategoryModel("UX Design", AssetImage("images/UIUXdesign.jpeg")),
+    SubCategoryModel(
+        "Landing Page Design", AssetImage("images/Landing Page Design.jpg")),
+    SubCategoryModel("Fashion Design", AssetImage("images/Fashion Design.png")),
+    SubCategoryModel(
+        "AR Filters & Lenses", AssetImage("images/AR Filters & Lenses.jpg")),
+    SubCategoryModel("Email Design", AssetImage("images/Email Design.png")),
+    SubCategoryModel("Other", AssetImage("images/other.jpg")),
   ];
-  List<String> WritingTranslation = [
-    "	Articles & Blog Posts",
-    "	Translation",
-    "	Website Content",
-    "	Brand Voice & Tone",
-    "	Product Descriptions",
-    "	Social Media Copy",
-    "	Sales Copy",
-    "	Book & eBook Writing",
-    "	Email Copy",
-    "	Ad Copy",
-    "	Case Studies",
-    "	Technical Writing",
-    "	Scriptwriting",
-    "	Other",
+  List<SubCategoryModel> WritingTranslation = [
+    SubCategoryModel("	Articles & Blog Posts", AssetImage("images/post.jpg")),
+    SubCategoryModel("	Translation", AssetImage("images/Translation.jpg")),
+    SubCategoryModel(
+        "	Website Content", AssetImage("images/Website Content.jpg")),
+    SubCategoryModel(
+        "	Brand Voice & Tone", AssetImage("images/Brand Voice & Tone.png")),
+    SubCategoryModel(
+        "	Social Media Copy", AssetImage("images/Social Media Copy.jpg")),
+    SubCategoryModel("	Sales Copy", AssetImage("images/Sales Copy.jpg")),
+    SubCategoryModel(
+        "	Book & eBook Writing", AssetImage("images/Book & eBook Writing.jpg")),
+    SubCategoryModel("	Email Copy", AssetImage("images/EmailCopy.jpg")),
+    SubCategoryModel("	Ad Copy", AssetImage("images/Ad Copy.png")),
+    SubCategoryModel("	Case Studies", AssetImage("images/CaseStudies.png")),
+    SubCategoryModel(
+        "	Technical Writing", AssetImage("images/TechnicalWriting.jpg")),
+    SubCategoryModel("	Other", AssetImage("images/other.jpg")),
   ];
-  List<String> VideoAnimation = [
-    "Video Editing",
-    "Short Video Ads",
-    "Animated GIFs",
-    "Logo Animation",
-    "Spokesperson Videos",
-    "Lyric & Music Videos",
-    "Character Animation",
-    "Lottie & Website Animation",
-    "3D Product Animation",
-    "E-Commerce Product Videos",
-    "Social Media Videos",
-    "Subtitles & Captions",
-    "App & Website Previews",
-    "Other",
+  List<SubCategoryModel> VideoAnimation = [
+    SubCategoryModel("Video Editing", AssetImage("images/VideoEditing.jpg")),
+    SubCategoryModel("Logo Animation", AssetImage("images/LogoAnimation.png")),
+    SubCategoryModel(
+        "Spokesperson Videos", AssetImage("images/SpokespersonVideos.jpg")),
+    SubCategoryModel(
+        "3D Product Animation", AssetImage("images/3DProductAnimation.png")),
+    SubCategoryModel("E-Commerce Product Videos",
+        AssetImage("images/E-CommerceProductVideos.jpg")),
+    SubCategoryModel(
+        "Social Media Videos", AssetImage("images/SocialMediaVideos.jpg")),
+    SubCategoryModel(
+        "Subtitles & Captions", AssetImage("images/Subtitles&Captions.jpg")),
+    SubCategoryModel("Other", AssetImage("images/other.jpg")),
   ];
-  List<String> MusicAudio = [
-    "Voice Over",
-    "Mixing & Mastering",
-    "Producers & Composers",
-    "Podcast Editing",
-    "Audiobook Production",
-    "Sound Design",
-    "Audio Logo & Sonic Branding",
-    "Singers & Vocalists",
-    "Songwriters",
-    "Other",
+  List<SubCategoryModel> MusicAudio = [
+    SubCategoryModel("Voice Over", AssetImage("images/VoiceOver.jpg")),
+    SubCategoryModel(
+        "Mixing & Mastering", AssetImage("images/Mixing &Mastering.jpg")),
+    SubCategoryModel(
+        "Podcast Editing", AssetImage("images/PodcastEditing.jpg")),
+    SubCategoryModel("Sound Design", AssetImage("images/Sound Design.jpg")),
+    SubCategoryModel("Audio Logo & Sonic Branding",
+        AssetImage("images/Audio Logo & Sonic Branding.jpg")),
+    SubCategoryModel("Other", AssetImage("images/other.jpg")),
   ];
-  List<String> Business = [
-    "E-Commerce Management",
-    "Market Research",
-    "Business Plans",
-    "Presentations",
-    "Sales",
-    "Other",
+  List<SubCategoryModel> Business = [
+    SubCategoryModel("Market Research", AssetImage("images/researchmarketing")),
+    SubCategoryModel("Business Plans", AssetImage("images/bussnisplan")),
+    SubCategoryModel(
+        "Presentations", AssetImage("images/business-presentation")),
+    SubCategoryModel("Other", AssetImage("images/other.jpg")),
   ];
+List<SubCategoryModel> Other = [
+  SubCategoryModel("Other", AssetImage("images/other.jpg")),
+];
 
   switch (name) {
     case "Data":
@@ -281,8 +282,8 @@ List<String> listfill(String name) {
       return MusicAudio;
     case "Business":
       return Business;
-    case "Other":
-      return ["Other"];
+    case "Other" :
+      return Other;
   }
   return [];
 }

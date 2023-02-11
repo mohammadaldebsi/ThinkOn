@@ -53,6 +53,7 @@ class _Category1State extends State<Category1> {
   List<ClientModel> clients = [];
   List<SellerModel> sellers = [];
   bool loading = true;
+
   @override
   void initState() {
     getData().then((value) => setState(() {
@@ -80,11 +81,11 @@ class _Category1State extends State<Category1> {
             ),
           ),
             backgroundColor: Color(0xFF223843),
-            toolbarHeight: 80,
+            toolbarHeight: 70,
             shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(
-                    bottomRight: Radius.circular(50),
-                    bottomLeft: Radius.circular(50)))),
+                    bottomRight: Radius.circular(30),
+                    bottomLeft: Radius.circular(30)))),
         body: loading
             ? Center(child: CircularProgressIndicator())
             : SingleChildScrollView(
@@ -148,7 +149,6 @@ class _Category1State extends State<Category1> {
                       doc["Category"],
                       doc["SubCategory"],
                       doc["Uuid"],
-                      doc["Description"],
                       doc["BasicDescription"],
                       doc["PremiumPrice"],
                       doc["PremiumDescription"],
@@ -222,6 +222,7 @@ List<String> addList() {
     "Music & Audio",
     "Business",
     "Other",
+    "data designer",
   ];
 
   return categories;

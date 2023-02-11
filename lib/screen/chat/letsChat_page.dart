@@ -80,13 +80,13 @@ class LetsChatState extends State<LetsChat> {
       if (image != null) {
         //Upload to Firebase
         var snapshot =
-            await firebaseStorage.ref().child('images/1').putFile(file);
+            await firebaseStorage.ref().child('images/imageName').putFile(file);
         var downloadUrl = await snapshot.ref.getDownloadURL();
         setState(() {
           imageUrl = downloadUrl;
         });
       } else {
-        print('No Image Path Received');
+        print('No Image Path ');
       }
     } else {
       print('Permission not granted. Try Again with permission access');

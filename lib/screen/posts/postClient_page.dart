@@ -10,6 +10,7 @@ import 'package:thinkon/widget/constant.dart';
 import '../../models/UserModel.dart';
 import '../../models/clientModel.dart';
 import '../chat/letsChat_page.dart';
+import '../home_page.dart';
 import '../profileother.dart';
 
 class PostClients extends StatefulWidget {
@@ -23,16 +24,23 @@ class PostClients extends StatefulWidget {
 class _PostClientsState extends State<PostClients> {
   bool load = true;
   UserModel user = UserModel("", "", "");
+  bool? itsMe=true;
+  String? UserUid = FirebaseAuth.instance.currentUser?.uid;
+  String? reUid, docId;
+  final TextEditingController _Price = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
   @override
   void initState() {
     // TODO: implement initState
     getdata().then((value) => setState(() {
           load = false;
         }));
+    if(widget.client.uid==FirebaseAuth.instance.currentUser?.uid){
+      itsMe=false;
+    }
   }
 
-  String? UserUid = FirebaseAuth.instance.currentUser?.uid;
-  String? reUid, docId;
+
   @override
   Widget build(BuildContext context) {
     docId = (UserUid! + widget.client.uid);
@@ -51,6 +59,119 @@ class _PostClientsState extends State<PostClients> {
               leading: IconButton(
                   icon: const Icon(Icons.arrow_back, color: Colors.white),
                   onPressed: () => Navigator.pop(context)),
+              actions: [
+                if (widget.client.uid != FirebaseAuth.instance.currentUser?.uid)
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: IconButton(
+                      onPressed: () {
+                        if(itsMe!)
+                        {
+                          showModalBottomSheet(
+                              context: context,
+                              builder: (context) => Padding(
+                                  padding: const EdgeInsets.only(bottom: 8.0),
+                                  child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Color(0xff757575),
+                                      ),
+                                      child: Container(
+                                        height: 200,
+                                        decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.only(
+                                                topRight: Radius.circular(30),
+                                                topLeft: Radius.circular(30))),
+                                        child: Form(
+                                          key: _formKey,
+                                          child: SingleChildScrollView(
+                                            child: Column(
+                                              children: [
+                                                Padding(
+                                                  padding: const EdgeInsets.all(15.0),
+                                                  child: TextFormField(
+                                                    controller: _Price,
+                                                    decoration: InputDecoration(
+                                                      border: OutlineInputBorder(
+                                                        borderSide: const BorderSide(
+                                                            width: 1.5),
+                                                        borderRadius:
+                                                        BorderRadius.circular(15),
+                                                      ),
+                                                      label: const Text(
+                                                        "Price",
+                                                        style: TextStyle(
+                                                            color: Colors.black),
+                                                      ),
+                                                    ),
+                                                    keyboardType:
+                                                    TextInputType.number,
+                                                    validator: (value) {
+                                                      if (value!.isNotEmpty) {
+                                                        return null;
+                                                      } else {
+                                                        return "Enter price";
+                                                      }
+                                                    },
+                                                  ),
+                                                ),
+                                                ElevatedButton(
+                                                  onPressed: () {if (_formKey.currentState!.validate()){
+                                                    if (widget.client.uid !=
+                                                        FirebaseAuth.instance
+                                                            .currentUser?.uid) {
+                                                      FirebaseFirestore.instance
+                                                          .collection("Users")
+                                                          .doc(widget.client.uid)
+                                                          .collection(
+                                                          "Client-Request")
+                                                          .doc()
+                                                          .set({
+                                                        "request-from": FirebaseAuth
+                                                            .instance
+                                                            .currentUser
+                                                            ?.uid,
+                                                        "Price": _Price.text,
+                                                        "status": "wait",
+                                                        "timestamp": Timestamp.now(),
+                                                      });
+                                                      FirebaseFirestore.instance
+                                                          .collection("Users")
+                                                          .doc(FirebaseAuth.instance
+                                                          .currentUser?.uid)
+                                                          .collection("Wait-Accept")
+                                                          .doc()
+                                                          .set({
+                                                        "request-to":
+                                                        widget.client.uid,
+                                                        "Price": _Price.text,
+                                                        "status": "wait",
+                                                        "timestamp": Timestamp.now(),
+                                                      });
+                                                      ScaffoldMessenger.of(context)
+                                                          .showSnackBar(SnackBar(
+                                                          content: Text(
+                                                              "waiting to accept")));
+                                                      Navigator.push(context, MaterialPageRoute(builder: (context) =>Homepage()));
+                                                    }
+
+                                                  }},
+                                                  child: Text("Request"),
+                                                  style: ElevatedButton.styleFrom(
+                                                    primary: coloruses,
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ))));}
+                      },
+                      icon: Icon(
+                        Icons.add_circle_outline,
+                      )),
+                )
+              ],
             ),
             body: Padding(
                 padding: const EdgeInsets.all(10),
@@ -61,10 +182,61 @@ class _PostClientsState extends State<PostClients> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          CircleAvatar(
-                            maxRadius: MediaQuery.of(context).size.width / 10,
-                            backgroundImage: AssetImage("images/profile.jpg"),
-                            child: MaterialButton(onPressed: () {}),
+                          StreamBuilder<DocumentSnapshot>(
+                            stream: FirebaseFirestore.instance
+                                .collection('Users')
+                                .doc(widget.client.uid)
+                                .snapshots(),
+                            builder: (context, snapshot) {
+                              if (!snapshot.hasData) {
+                                return Center(
+                                  child: CircularProgressIndicator(
+                                    backgroundColor: Colors.lightBlueAccent,
+                                  ),
+                                );
+                              }
+                              final String messages =
+                              snapshot.data!.get("Gender");
+                              if (messages.toLowerCase() == "male") {
+                                return Container(
+                                  margin:
+                                  const EdgeInsets.fromLTRB(0, 0, 20, 10),
+                                  width: 80,
+                                  height: 80,
+                                  child: MaterialButton(onPressed: () {}),
+                                  decoration: BoxDecoration(
+                                      boxShadow: const [
+                                        BoxShadow(
+                                            color: Color(0xFF223843),
+                                            blurRadius: 5),
+                                      ],
+                                      borderRadius: BorderRadius.circular(360),
+                                      image: const DecorationImage(
+                                          fit: BoxFit.cover,
+                                          image: AssetImage(
+                                              "images/profile.jpg"))),
+                                );
+                              } else {
+                                return Container(
+                                  margin:
+                                  const EdgeInsets.fromLTRB(0, 0, 20, 10),
+                                  width: 80,
+                                  height: 80,
+                                  child: MaterialButton(onPressed: () {}),
+                                  decoration: BoxDecoration(
+                                      boxShadow: const [
+                                        BoxShadow(
+                                            color: Color(0xFF223843),
+                                            blurRadius: 5),
+                                      ],
+                                      borderRadius: BorderRadius.circular(360),
+                                      image: const DecorationImage(
+                                          fit: BoxFit.cover,
+                                          image: AssetImage(
+                                              "images/girl.jpg"))),
+                                );
+                              }
+                            },
                           ),
                           Text(user.name.toString(),
                               style: TextStyle(

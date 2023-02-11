@@ -2,19 +2,15 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:thinkon/screen/chat/chat_page.dart';
 import 'package:thinkon/screen/posts/newPost_page.dart';
-import 'package:thinkon/screen/Category.dart';
-import 'package:thinkon/screen/Login_Page.dart';
 import 'package:thinkon/screen/posts/postSeller_page.dart';
-import 'package:thinkon/screen/register.dart';
-import 'package:thinkon/screen/Category.dart';
 import 'package:thinkon/widget/constant.dart';
-
 import '../models/SellerModels.dart';
+import '../models/clientModel.dart';
+import '../models/cubcategory.dart';
 
 class Homepage extends StatelessWidget {
   const Homepage({Key? key}) : super(key: key);
@@ -40,13 +36,18 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   final FirebaseAuth _Auth = FirebaseAuth.instance;
   late User LoggedInUser;
-
+  List<ClientModel> clients = [];
+  List<SellerModel> sellers = [];
+  bool loading = true;
   @override
   void initState() {
+    getData().then((value) => setState(() {}));
+    getsellerData().then((value) => setState(() {
+          loading = false;
+        }));
+    getCurrentUser();
     // TODO: implement initState
     super.initState();
-
-    getCurrentUser();
   }
 
   void getCurrentUser() async {
@@ -54,10 +55,40 @@ class _HomeState extends State<Home> {
       final user = await _Auth.currentUser;
 
       LoggedInUser = user!;
-      print(LoggedInUser);
     } catch (e) {
       print(e);
     }
+  }
+
+  Future<void> getData() async {
+    await FirebaseFirestore.instance
+        .collection("ClientPosts")
+        .get()
+        .then((querySnapshot) => {
+              querySnapshot.docs.forEach((doc) => {
+                    clients.add(ClientModel(doc["Category"], doc["SubCategory"],
+                        doc["Uuid"], doc["Description"], doc["Budget"]))
+                  })
+            });
+  }
+
+  Future<void> getsellerData() async {
+    await FirebaseFirestore.instance
+        .collection("SellerPosts")
+        .get()
+        .then((querySnapshot) => {
+              querySnapshot.docs.forEach((doc) => {
+                    sellers.add(SellerModel(
+                      doc["Category"],
+                      doc["SubCategory"],
+                      doc["Uuid"],
+                      doc["BasicDescription"],
+                      doc["PremiumPrice"],
+                      doc["PremiumDescription"],
+                      doc["BasicPrice"],
+                    ))
+                  })
+            });
   }
 
   @override
@@ -88,56 +119,78 @@ class _HomeState extends State<Home> {
                 iconSize: 20),
           ],
           backgroundColor: Color(0xFF223843),
-          toolbarHeight: 80,
+          toolbarHeight: 70,
           shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.only(
-                  bottomRight: Radius.circular(50),
-                  bottomLeft: Radius.circular(50)))),
-      body: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-                margin: const EdgeInsets.fromLTRB(10, 20, 0, 0),
-                child: const Text(
-                  "Overview",
-                  style: TextStyle(
-                      color: Color(0xFF223843),
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20),
-                )),
-            Container(
-              height: 180,
-              width: MediaQuery.of(context).size.width,
-              margin: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                boxShadow: const [
-                  BoxShadow(color: Colors.black, blurRadius: 5),
-                ],
-                borderRadius: BorderRadius.circular(30),
-                image: DecorationImage(
-                  image: AssetImage("images/hultprize.jpg"),
-                  fit: BoxFit.fill,
-                ),
+                  bottomRight: Radius.circular(30),
+                  bottomLeft: Radius.circular(30)))),
+      body: loading
+          ? Center(
+              child: CircularProgressIndicator(
+                color: coloruses,
               ),
-              child: MaterialButton(
-                onPressed: () {},
+            )
+          : SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                      margin: const EdgeInsets.fromLTRB(10, 20, 0, 0),
+                      child: const Text(
+                        "Overview",
+                        style: TextStyle(
+                            color: Color(0xFF223843),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20),
+                      )),
+                  Container(
+                    height: 180,
+                    width: MediaQuery.of(context).size.width,
+                    margin: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      boxShadow: const [
+                        BoxShadow(color: Colors.black, blurRadius: 5),
+                      ],
+                      borderRadius: BorderRadius.circular(30),
+                      image: DecorationImage(
+                        image: AssetImage("images/hultprize.jpg"),
+                        fit: BoxFit.fill,
+                      ),
+                    ),
+                    child: MaterialButton(
+                      onPressed: () {},
+                    ),
+                  ),
+                  Container(
+                      margin: const EdgeInsets.fromLTRB(10, 20, 0, 0),
+                      child: const Text(
+                        "Trends",
+                        style: TextStyle(
+                            color: Color(0xFF223843),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20),
+                      )),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  _subcategorytrend(clients, sellers),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Container(
+                      margin: const EdgeInsets.fromLTRB(10, 10, 0, 0),
+                      child: const Text(
+                        "Best Seller",
+                        style: TextStyle(
+                            color: Color(0xFF223843),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20),
+                      )),
+                  Trending(),
+                ],
               ),
             ),
-            Container(
-                margin: const EdgeInsets.fromLTRB(10, 10, 0, 0),
-                child: const Text(
-                  "Best Seller",
-                  style: TextStyle(
-                      color: Color(0xFF223843),
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20),
-                )),
-            Trending(),
-          ],
-        ),
-      ),
     );
   }
 }
@@ -171,7 +224,6 @@ class _TrendingState extends State<Trending> {
                       doc["Category"],
                       doc["SubCategory"],
                       doc["Uuid"],
-                      doc["Description"],
                       doc["BasicDescription"],
                       doc["PremiumPrice"],
                       doc["PremiumDescription"],
@@ -193,12 +245,12 @@ class _TrendingState extends State<Trending> {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: GridView.builder(
-
-                  gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                      maxCrossAxisExtent: MediaQuery.of(context).size.width / 2,
+                  physics: ScrollPhysics(),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
                       childAspectRatio: 3 / 2,
-                      crossAxisSpacing: 20,
-                      mainAxisSpacing: 20),
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing:10),
                   itemCount: sellerList.length,
                   itemBuilder: (BuildContext ctx, index) {
                     return InkWell(
@@ -260,5 +312,52 @@ class _TrendingState extends State<Trending> {
                   }),
             ),
           );
+  }
+}
+
+class _subcategorytrend extends StatefulWidget {
+  List<ClientModel> clients = [];
+  List<SellerModel> sellers = [];
+  @override
+  State<_subcategorytrend> createState() => _CreateEventContainerState();
+
+  _subcategorytrend(this.clients, this.sellers);
+}
+
+class _CreateEventContainerState extends State<_subcategorytrend> {
+  List<SubCategoryModel> subCategory = [
+    SubCategoryModel(
+        "Website Builders", AssetImage("images/website builder 1.png")),
+    SubCategoryModel("	Data Science", AssetImage("images/data science.jpg")),
+    SubCategoryModel("App Design", AssetImage("images/App Design.jpg")),
+    SubCategoryModel(
+        "Video Marketing", AssetImage("images/Video Marketing.jpg")),
+    SubCategoryModel("UX Design", AssetImage("images/UIUXdesign.jpeg")),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          for (var x in subCategory) ...[
+            MaterialButton(
+                onPressed: () {},
+                child: Container(
+                  width: 200,
+                  height: 150,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(image: x.image, fit: BoxFit.fill),
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: const [
+                      BoxShadow(color: Colors.black, blurRadius: 5),
+                    ],
+                  ),
+                )),
+          ]
+        ],
+      ),
+    );
   }
 }

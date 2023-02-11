@@ -81,10 +81,61 @@ class _ProfileOtherState extends State<ProfileOther> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          CircleAvatar(
-                            maxRadius: MediaQuery.of(context).size.width / 10,
-                            backgroundImage: AssetImage("images/profile.jpg"),
-                            child: MaterialButton(onPressed: () {}),
+                          StreamBuilder<DocumentSnapshot>(
+                            stream: FirebaseFirestore.instance
+                                .collection('Users')
+                                .doc(widget.Uuiduser)
+                                .snapshots(),
+                            builder: (context, snapshot) {
+                              if (!snapshot.hasData) {
+                                return Center(
+                                  child: CircularProgressIndicator(
+                                    backgroundColor: Colors.lightBlueAccent,
+                                  ),
+                                );
+                              }
+                              final String messages =
+                              snapshot.data!.get("Gender");
+                              if (messages.toLowerCase() == "male") {
+                                return Container(
+                                  margin:
+                                  const EdgeInsets.fromLTRB(0, 0, 20, 10),
+                                  width: 80,
+                                  height: 80,
+                                  child: MaterialButton(onPressed: () {}),
+                                  decoration: BoxDecoration(
+                                      boxShadow: const [
+                                        BoxShadow(
+                                            color: Color(0xFF223843),
+                                            blurRadius: 5),
+                                      ],
+                                      borderRadius: BorderRadius.circular(360),
+                                      image: const DecorationImage(
+                                          fit: BoxFit.cover,
+                                          image: AssetImage(
+                                              "images/profile.jpg"))),
+                                );
+                              } else {
+                                return Container(
+                                  margin:
+                                  const EdgeInsets.fromLTRB(0, 0, 20, 10),
+                                  width: 80,
+                                  height: 80,
+                                  child: MaterialButton(onPressed: () {}),
+                                  decoration: BoxDecoration(
+                                      boxShadow: const [
+                                        BoxShadow(
+                                            color: Color(0xFF223843),
+                                            blurRadius: 5),
+                                      ],
+                                      borderRadius: BorderRadius.circular(360),
+                                      image: const DecorationImage(
+                                          fit: BoxFit.cover,
+                                          image: AssetImage(
+                                              "images/girl.jpg"))),
+                                );
+                              }
+                            },
                           ),
                           StreamBuilder<DocumentSnapshot>(
                             stream: FirebaseFirestore.instance
@@ -383,7 +434,6 @@ class __SellerothersuerState extends State<_Sellerothersuer> {
                     sellerList.add(SellerUserModel(
                       doc["Category"],
                       doc["SubCategory"],
-                      doc["Description"],
                       doc["BasicDescription"],
                       doc["PremiumPrice"],
                       doc["PremiumDescription"],

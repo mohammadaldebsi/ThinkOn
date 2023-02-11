@@ -36,11 +36,11 @@ class _PostSellersUserState extends State<PostSellersUser> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: coloruses,
-          toolbarHeight: 80,
+          toolbarHeight: 70,
           shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.only(
-                  bottomRight: Radius.circular(50),
-                  bottomLeft: Radius.circular(50))),
+                  bottomRight: Radius.circular(30),
+                  bottomLeft: Radius.circular(30))),
           leading: IconButton(
               icon: const Icon(Icons.arrow_back, color: Colors.white),
               onPressed: () => Navigator.pop(context)),
@@ -91,6 +91,7 @@ class _PostSellersUserState extends State<PostSellersUser> {
                               color: coloruses,
                             )),
                       ),
+
                       DefaultTabController(
                         length: 2, // length of tabs
                         child: Column(
@@ -203,7 +204,7 @@ class _PremiuminformationState extends State<_Premiuminformation> {
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text(widget.seller.description,
+              child: Text(widget.seller.subCategory,
                   style: TextStyle(color: Colors.white)),
             ),
           ]),

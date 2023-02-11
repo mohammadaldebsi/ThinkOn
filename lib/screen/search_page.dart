@@ -18,7 +18,7 @@ class Search extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Search1();
+    return MaterialApp(debugShowCheckedModeBanner: false,home: Search1());
   }
 }
 
@@ -64,7 +64,7 @@ class _Search1State extends State<Search1> {
         body: loading
             ? Center(child: CircularProgressIndicator())
             : Padding(
-                padding: const EdgeInsets.only(top: 15.0),
+                padding: const EdgeInsets.all( 15.0),
                 child: Column(
                   children: [
                     SizedBox(
@@ -239,7 +239,6 @@ class _Search1State extends State<Search1> {
                       doc["Category"],
                       doc["SubCategory"],
                       doc["Uuid"],
-                      doc["Description"],
                       doc["BasicDescription"],
                       doc["PremiumPrice"],
                       doc["PremiumDescription"],

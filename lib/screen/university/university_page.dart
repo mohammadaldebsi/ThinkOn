@@ -5,14 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:thinkon/screen/university/events_page.dart';
 import 'package:thinkon/screen/university/postUniversity_page.dart';
 import 'package:thinkon/screen/university/surveys_page.dart';
+import 'package:thinkon/widget/constant.dart';
 
 class University extends StatelessWidget {
   const University({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,home: _University());
+    return MaterialApp(debugShowCheckedModeBanner: false, home: _University());
   }
 }
 
@@ -45,160 +45,125 @@ class _UniversityState extends State<_University> {
                     image: AssetImage("images/ASU.jpg"), fit: BoxFit.cover)),
           ),
         ),
-        body: Container(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+        body: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text("Events",
+                      style: TextStyle(
+                          color: coloruses,
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold)),
+                  TextButton(
+                      onPressed: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return EventUniversity();
+                        }));
+                      },
+                      child: Text(
+                        "See all",
+                        style: TextStyle(color: Colors.blue),
+                      ))
+                ],
+              ),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: Text("Events",
-                              style: TextStyle(
-                                  color: Colors.indigo,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold)),
-                        ),
-                        TextButton(
-                            onPressed: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (context){
-                                return EventUniversity();
-                              }));
-                            },
-                            child: Text(
-                              "See all",
-                              style: TextStyle(color: Colors.blue),
-                            ))
-                      ],
-                    ),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      padding: EdgeInsets.all(5),
-                      child: Row(
-                        children: [
-                          _CreateEventContainer(),
-                          _CreateEventContainer(),
-                          _CreateEventContainer(),
-                        ],
-                      ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 10.0),
-                          child: Text("Social media at ASU",
-                              style: TextStyle(
-                                  color: Colors.indigo,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold)),
-                        ),
-                        TextButton(
-                            onPressed: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (context){
-                                return PostUniversity();
-                              }));
-                            },
-                            child: Text(
-                              "See all",
-                              style: TextStyle(color: Colors.blue),
-                            ))
-                      ],
-                    ),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      padding: EdgeInsets.all(5),
-                      child: Row(
-                        children: [
-                          _CreatePostContainer(),
-                          _CreatePostContainer(),
-                        ],
-                      ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 10.0),
-                          child: Text("Surveys",
-                              style: TextStyle(
-                                  color: Colors.indigo,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold)),
-                        ),
-                        TextButton(
-                            onPressed: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (context){
-                                return SurveyUniversity();
-                              }));
-                            },
-                            child: Text(
-                              "See all",
-                              style: TextStyle(color: Colors.blue),
-                            ))
-                      ],
-                    ),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: MaterialButton(
-                      onPressed: () {},
-                      child: Container(
-                          width: 350,
-                          height: 120,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10),
-                            boxShadow: const [
-                              BoxShadow(color: Colors.black, blurRadius: 5),
-                            ],
-                          ),
-                          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                            Container(
-                                width: 350,
-                                height: 120,
-                                child: Row(children: [
-                                  Container(
-                                    width: 150,
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.only(
-                                            topLeft: Radius.circular(10),
-                                            bottomLeft: Radius.circular(10)),
-                                        image: DecorationImage(
-                                            image: AssetImage("images/contactasu.jpg"),
-                                            fit: BoxFit.fitHeight)),
-                                  ),
-                                  Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Column(children: [
-                                        SizedBox(
-                                          width: 5,
-                                        ),
-                                        Center(
-                                          child: Text(
-                                            "Applied science private\n university",
-                                            style: TextStyle(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.indigo),
-                                          ),
-                                        ),
-
-                                      ]))
-                                ]))
-                          ]))),
+                    _CreateEventContainer(AssetImage("images/hultprize.jpg")),
+                    _CreateEventContainer(AssetImage("images/JPC.jpg")),
+                    _CreateEventContainer(AssetImage("images/UIUX.jpg")),
+                    _CreateEventContainer(AssetImage("images/SEC.jpg")),
+                  ],
                 ),
-                    SizedBox(height: 20,)
-                  ]),
-            )));
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text("Social media at ASU",
+                      style: TextStyle(
+                          color: coloruses,
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold)),
+                  TextButton(
+                      onPressed: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return PostUniversity();
+                        }));
+                      },
+                      child: Text(
+                        "See all",
+                        style: TextStyle(color: Colors.blue),
+                      ))
+                ],
+              ),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    _CreatePostContainer(),
+                    _CreatePostContainer(),
+                  ],
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text("Surveys",
+                      style: TextStyle(
+                          color: coloruses,
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold)),
+                  TextButton(
+                      onPressed: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return SurveyUniversity();
+                        }));
+                      },
+                      child: Text(
+                        "See all",
+                        style: TextStyle(color: Colors.blue),
+                      ))
+                ],
+              ),
+              Container(
+                width: MediaQuery.of(context).size.width,
+                height: 120,
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: const [
+                      BoxShadow(color: Colors.black, blurRadius: 5),
+                    ],
+                    image: DecorationImage(
+                        fit: BoxFit.contain,
+                        image: AssetImage(
+                          "images/logo.png",
+                        ))),
+              ),
+              SizedBox(
+                height: 20,
+              )
+            ]),
+          ),
+        ));
   }
 }
 
 class _CreateEventContainer extends StatefulWidget {
+  AssetImage view;
   @override
   State<_CreateEventContainer> createState() => _CreateEventContainerState();
+
+  _CreateEventContainer(this.view);
 }
 
 class _CreateEventContainerState extends State<_CreateEventContainer> {
@@ -219,67 +184,18 @@ class _CreateEventContainerState extends State<_CreateEventContainer> {
   @override
   Widget build(BuildContext context) {
     return MaterialButton(
-      onPressed: () {},
-      child: Container(
-        width: 200,
-        height: 200,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(10),
-          boxShadow: const [
-            BoxShadow(color: Colors.black, blurRadius: 5),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: 200,
-              height: 100,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  image: DecorationImage(
-                      image: AssetImage("images/hultprize.jpg"),
-                      fit: BoxFit.cover)),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(formattedDateTime() + " ",
-                      style: TextStyle(color: Colors.blueGrey, fontSize: 10)),
-                  Text("Hult prize",
-                      style: TextStyle(
-                          color: Colors.indigo,
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold)),
-                  SizedBox(height: 30),
-                  Row(
-                    children: [
-                      Icon(Icons.location_on_outlined,
-                          color: Colors.redAccent, size: 15),
-                      Text(formattedDateTime() + " ",
-                          style: TextStyle(color: Colors.blueGrey)),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  String formattedDateTime() {
-    DateTime now = new DateTime.now();
-    return now.day.toString() +
-        " " +
-        MONTHS[now.month - 1] +
-        " " +
-        now.year.toString() +
-        " ";
+        onPressed: () {},
+        child: Container(
+          width: 200,
+          height: 150,
+          decoration: BoxDecoration(
+            image: DecorationImage(image: widget.view, fit: BoxFit.cover),
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: const [
+              BoxShadow(color: Colors.black, blurRadius: 5),
+            ],
+          ),
+        ));
   }
 }
 
@@ -317,7 +233,7 @@ class _CreatePostContainerState extends State<_CreatePostContainer> {
                               topLeft: Radius.circular(10),
                               bottomLeft: Radius.circular(10)),
                           image: DecorationImage(
-                              image: AssetImage("images/post.jpg"),
+                              image: AssetImage("images/study.jpeg"),
                               fit: BoxFit.fitHeight)),
                     ),
                     Padding(
@@ -332,7 +248,7 @@ class _CreatePostContainerState extends State<_CreatePostContainer> {
                                     borderRadius: BorderRadius.circular(360),
                                     image: DecorationImage(
                                         image: AssetImage("images/profile.jpg"),
-                                        fit: BoxFit.fitHeight)),
+                                        fit: BoxFit.fill)),
                               ),
                               SizedBox(
                                 width: 5,
@@ -342,7 +258,7 @@ class _CreatePostContainerState extends State<_CreatePostContainer> {
                                 style: TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.indigo),
+                                    color: coloruses),
                               )
                             ],
                           ),
@@ -353,7 +269,7 @@ class _CreatePostContainerState extends State<_CreatePostContainer> {
                                   style: TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.blue,
+                                    color: coloruses,
                                   )))
                         ]))
                   ]))
